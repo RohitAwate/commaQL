@@ -1,83 +1,69 @@
 package parser
 
-import "fmt"
-
-type TokenType uint
-
-const (
-	// SQL Keywords
-	AND      = iota
-	ALL      = iota
-	AS       = iota
-	ASC      = iota
-	BETWEEN  = iota
-	CHECK    = iota
-	COUNT    = iota
-	DESC     = iota
-	DISTINCT = iota
-	FROM     = iota
-	FULL     = iota
-	GROUP_BY = iota
-	HAVING   = iota
-	IN       = iota
-	INNER    = iota
-	IS       = iota
-	JOIN     = iota
-	LEFT     = iota
-	LIKE     = iota
-	LIMIT    = iota
-	NOT      = iota
-	NULL     = iota
-	OR       = iota
-	ORDER_BY = iota
-	OUTER    = iota
-	RIGHT    = iota
-	TOP      = iota
-	UNION    = iota
-	WHERE    = iota
-
-	// Punctuation
-	STAR         = iota
-	COMMA        = iota
-	SINGLE_QUOTE = iota
-	DOUBLE_QUOTE = iota
-	DOT          = iota
-	OPEN_PAREN   = iota
-	CLOSE_PAREN  = iota
-	SEMICOLON    = iota
-
-	// Operators
-	PLUS         = iota
-	MINUS        = iota
-	DIVIDE       = iota
-	LESS_THAN    = iota
-	GREATER_THAN = iota
-	EXPONENT     = iota
-
-	IDENTIFER = iota
-)
-
-type Location struct {
-	Line   uint
-	Column uint
-}
-
-type Token struct {
-	Type     TokenType
-	Lexeme   string
-	Location Location
-}
-
 type Tokenizer struct {
 	Query string
+
+	// Absolute trackers
+	current   uint
+	lookahead uint
+
+	// Relative trackers
+	currentLine   uint
+	currentColumn uint
+
+	lookaheadLine   uint
+	lookaheadColumn uint
 }
 
 func (t *Tokenizer) Run() []Token {
 	var tokens []Token = make([]Token, 0)
 
-	for index, char := range t.Query {
-		fmt.Printf("%d %c\n", index, char)
+	for !t.eof() {
+		if isDigit(t.peek()) {
+			tokens = append(tokens, t.number())
+		}
 	}
 
 	return tokens
+}
+
+func (t *Tokenizer) eof() bool {
+	return t.lookahead == uint(len(t.Query))
+}
+
+func (t *Tokenizer) peek() byte {
+	if t.lookahead < uint(len(t.Query)) {
+		return t.Query[t.lookahead]
+	} else {
+		return byte(0)
+	}
+}
+
+func (t *Tokenizer) advance() {
+	if t.lookahead < uint(len(t.Query)) {
+		t.lookahead++
+	}
+}
+
+func (t *Tokenizer) getLexemeForWindow() string {
+	return t.Query[t.current:t.lookahead]
+}
+
+func (t *Tokenizer) getLocationForWindow() Location {
+	return Location{Line: t.currentLine, Column: t.currentColumn}
+}
+
+func (t *Tokenizer) getTokenForWindow() Token {
+	return Token{Lexeme: t.getLexemeForWindow(), Location: t.getLocationForWindow()}
+}
+
+func (t *Tokenizer) number() Token {
+	for isDigit(t.peek()) {
+		t.advance()
+	}
+
+	token := t.getTokenForWindow()
+	token.Type = NUMBER
+
+	return token
 }

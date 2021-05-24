@@ -1,14 +1,20 @@
 package main
 
-import "awate.in/commaql/commaql/parser"
+import (
+	"fmt"
+
+	"awate.in/commaql/commaql/parser"
+)
 
 func main() {
-	query := "SELECT * FROM prices"
+	query := "12345"
 	// SELECT
 	// STAR
 	// FROM
 	// identifier
 
 	tokenizer := parser.Tokenizer{Query: query}
-	tokenizer.Run()
+	tokens := tokenizer.Run()
+
+	fmt.Println(tokens)
 }
