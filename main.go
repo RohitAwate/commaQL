@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import "awate.in/commaql/commaql/parser"
 
 func main() {
-	fmt.Println("hello world from commaQL!")
+	query := "SELECT * FROM prices"
+	// SELECT
+	// STAR
+	// FROM
+	// identifier
+
+	tokenizer := parser.Tokenizer{Query: query}
+	tokenizer.Run()
 }
