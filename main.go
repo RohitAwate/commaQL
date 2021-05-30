@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	query := "SELECT WHERE 12345 FROM AS DISTINCT"
+	query := "select distinct * from prices where id > 129 and name = 'soap'"
 	// SELECT
 	// STAR
 	// FROM
@@ -16,5 +16,7 @@ func main() {
 	tokenizer := parser.Tokenizer{Query: query}
 	tokens := tokenizer.Run()
 
-	fmt.Println(tokens)
+	for _, token := range tokens {
+		fmt.Println(token)
+	}
 }

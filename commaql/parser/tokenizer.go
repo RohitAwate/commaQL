@@ -1,6 +1,8 @@
 package parser
 
-import "strings"
+import (
+	"strings"
+)
 
 type Tokenizer struct {
 	Query string
@@ -27,6 +29,39 @@ func (t *Tokenizer) Run() []Token {
 			tokens = append(tokens, t.number())
 		} else if isAlpha(t.peek()) {
 			tokens = append(tokens, t.identifier())
+		}
+
+		switch t.peek() {
+		case '*':
+			tokens = append(tokens, t.emitSingleCharToken(STAR))
+		case ',':
+			tokens = append(tokens, t.emitSingleCharToken(COMMA))
+		case '\'':
+			tokens = append(tokens, t.emitSingleCharToken(SINGLE_QUOTE))
+		case '"':
+			tokens = append(tokens, t.emitSingleCharToken(DOUBLE_QUOTE))
+		case '.':
+			tokens = append(tokens, t.emitSingleCharToken(DOT))
+		case '(':
+			tokens = append(tokens, t.emitSingleCharToken(OPEN_PAREN))
+		case ')':
+			tokens = append(tokens, t.emitSingleCharToken(CLOSE_PAREN))
+		case ';':
+			tokens = append(tokens, t.emitSingleCharToken(SEMICOLON))
+		case '=':
+			tokens = append(tokens, t.emitSingleCharToken(EQUALS))
+		case '+':
+			tokens = append(tokens, t.emitSingleCharToken(PLUS))
+		case '-':
+			tokens = append(tokens, t.emitSingleCharToken(MINUS))
+		case '/':
+			tokens = append(tokens, t.emitSingleCharToken(DIVIDE))
+		case '<':
+			tokens = append(tokens, t.emitSingleCharToken(LESS_THAN))
+		case '>':
+			tokens = append(tokens, t.emitSingleCharToken(GREATER_THAN))
+		case '^':
+			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
 		}
 	}
 
@@ -110,5 +145,12 @@ func (t *Tokenizer) identifier() Token {
 		token.Type = IDENTIFER
 	}
 
+	return token
+}
+
+func (t *Tokenizer) emitSingleCharToken(tokenType TokenType) Token {
+	t.advance()
+	token := t.emitToken()
+	token.Type = tokenType
 	return token
 }
