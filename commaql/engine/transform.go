@@ -24,7 +24,7 @@ func DeduceTypeForColumn(sample string) SQLType {
 
 	_, err = strconv.ParseBool(sample)
 	if err == nil {
-		return SQL_FLOAT
+		return SQL_BOOL
 	}
 
 	return SQL_STRING
