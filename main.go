@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	query := "12345"
+	query := "SELECT WHERE 12345 FROM AS DISTINCT"
 	// SELECT
 	// STAR
 	// FROM

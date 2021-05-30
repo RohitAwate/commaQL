@@ -1,5 +1,9 @@
 package parser
 
+import (
+	"strings"
+)
+
 type TokenType uint
 
 const (
@@ -9,13 +13,14 @@ const (
 	AS       = iota
 	ASC      = iota
 	BETWEEN  = iota
+	BY       = iota
 	CHECK    = iota
 	COUNT    = iota
 	DESC     = iota
 	DISTINCT = iota
 	FROM     = iota
 	FULL     = iota
-	GROUP_BY = iota
+	GROUP    = iota
 	HAVING   = iota
 	IN       = iota
 	INNER    = iota
@@ -27,9 +32,10 @@ const (
 	NOT      = iota
 	NULL     = iota
 	OR       = iota
-	ORDER_BY = iota
+	ORDER    = iota
 	OUTER    = iota
 	RIGHT    = iota
+	SELECT   = iota
 	TOP      = iota
 	UNION    = iota
 	WHERE    = iota
@@ -43,6 +49,7 @@ const (
 	OPEN_PAREN   = iota
 	CLOSE_PAREN  = iota
 	SEMICOLON    = iota
+	EQUALS       = iota
 
 	// Operators
 	PLUS         = iota
@@ -55,6 +62,50 @@ const (
 	IDENTIFER = iota
 	NUMBER    = iota
 )
+
+var SQLKeywordsToTokenType = map[string]TokenType{
+	"AND":      AND,
+	"ALL":      ALL,
+	"AS":       AS,
+	"ASC":      ASC,
+	"BETWEEN":  BETWEEN,
+	"BY":       BY,
+	"CHECK":    CHECK,
+	"COUNT":    COUNT,
+	"DESC":     DESC,
+	"DISTINCT": DISTINCT,
+	"FROM":     FROM,
+	"FULL":     FULL,
+	"GROUP":    GROUP,
+	"HAVING":   HAVING,
+	"IN":       IN,
+	"INNER":    INNER,
+	"IS":       IS,
+	"JOIN":     JOIN,
+	"LEFT":     LEFT,
+	"LIKE":     LIKE,
+	"LIMIT":    LIMIT,
+	"NOT":      NOT,
+	"NULL":     NULL,
+	"OR":       OR,
+	"ORDER":    ORDER,
+	"OUTER":    OUTER,
+	"RIGHT":    RIGHT,
+	"SELECT":   SELECT,
+	"TOP":      TOP,
+	"UNION":    UNION,
+	"WHERE":    WHERE,
+}
+
+func IsSQLKeyword(identifier string) bool {
+	for keyword := range SQLKeywordsToTokenType {
+		if strings.ToUpper(identifier) == keyword {
+			return true
+		}
+	}
+
+	return false
+}
 
 type Location struct {
 	Line   uint
