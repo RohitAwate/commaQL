@@ -14,9 +14,13 @@ func main() {
 	// identifier
 
 	tokenizer := parser.Tokenizer{Query: query}
-	tokens := tokenizer.Run()
+	tokens, errors := tokenizer.Run()
 
 	for _, token := range tokens {
 		fmt.Println(token)
+	}
+
+	for _, err := range errors {
+		fmt.Println(err)
 	}
 }

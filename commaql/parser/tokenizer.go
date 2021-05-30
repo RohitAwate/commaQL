@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -17,18 +18,21 @@ func (t *Tokenizer) Reset() {
 	t.lookahead = 0
 }
 
-func (t *Tokenizer) Run() []Token {
+func (t *Tokenizer) Run() ([]Token, []ParserError) {
 	t.Reset()
 
 	var tokens []Token = make([]Token, 0)
+	var errors []ParserError = make([]ParserError, 0)
 
 	for !t.eof() {
 		t.skipWhitespace()
 
 		if isDigit(t.peek()) {
 			tokens = append(tokens, t.number())
+			continue
 		} else if isAlpha(t.peek()) {
 			tokens = append(tokens, t.identifier())
+			continue
 		}
 
 		switch t.peek() {
@@ -62,10 +66,20 @@ func (t *Tokenizer) Run() []Token {
 			tokens = append(tokens, t.emitSingleCharToken(GREATER_THAN))
 		case '^':
 			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
+		default:
+			errMsg := fmt.Sprintf("Unexpected token: %c", t.peek())
+			errors = append(errors, t.emitError(errMsg))
 		}
 	}
 
-	return tokens
+	return tokens, errors
+}
+
+func (t *Tokenizer) emitError(message string) ParserError {
+	return ParserError{
+		Message:  message,
+		Location: t.getLocationForWindow(),
+	}
 }
 
 func (t *Tokenizer) eof() bool {
@@ -87,7 +101,6 @@ func (t *Tokenizer) advance() {
 }
 
 func (t *Tokenizer) advanceWindow() {
-	t.lookahead++
 	t.anchor = t.lookahead
 }
 
@@ -109,7 +122,9 @@ func (t *Tokenizer) skipWhitespace() {
 	for {
 		switch t.peek() {
 		case ' ':
+			fallthrough
 		case '\r':
+			fallthrough
 		case '\t':
 			t.advance()
 		case '\n':
