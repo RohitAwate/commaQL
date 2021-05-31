@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"awate.in/commaql/commaql/core"
-	"awate.in/commaql/commaql/parser"
+	"awate.in/commaql/core"
+	"awate.in/commaql/parser"
 )
 
 func main() {
