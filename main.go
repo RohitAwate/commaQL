@@ -22,7 +22,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	csvFile, _ := os.Open("prices.csv")
+	csvFile, _ := os.Open("addresses.csv")
 
 	table, err := core.GetTableFromCSV(csvFile)
 	if err != nil {

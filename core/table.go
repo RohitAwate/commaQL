@@ -3,6 +3,7 @@ package core
 import (
 	"encoding/csv"
 	"os"
+	"strings"
 )
 
 type Column struct {
@@ -60,6 +61,10 @@ func NextRow(csvReader *csv.Reader) ([]string, error) {
 	row, err := csvReader.Read()
 	if err != nil {
 		return nil, err
+	}
+
+	for index := range row {
+		row[index] = strings.TrimSpace(row[index])
 	}
 
 	return row, nil
