@@ -24,7 +24,10 @@ func main() {
 
 	csvFile, _ := os.Open("prices.csv")
 
-	table, _ := core.GetTableFromCSV(csvFile)
+	table, err := core.GetTableFromCSV(csvFile)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	fmt.Println(table)
 }
