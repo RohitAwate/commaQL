@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -43,7 +44,7 @@ func GetTableFromCSV(csvFile *os.File) (*Table, error) {
 		if table.ContainsHeader {
 			columnName = firstRow[index]
 		} else {
-			columnName = string('A' + index)
+			columnName = GetColumnAlias(uint(index))
 		}
 
 		newColumn := Column{
@@ -68,4 +69,8 @@ func NextRow(csvReader *csv.Reader) ([]string, error) {
 	}
 
 	return row, nil
+}
+
+func GetColumnAlias(index uint) string {
+	return fmt.Sprintf("Col_%d", index)
 }
