@@ -55,6 +55,7 @@ const (
 	PLUS           = iota
 	MINUS          = iota
 	DIVIDE         = iota
+	MDOULO         = iota
 	LESS_THAN      = iota
 	GREATER_THAN   = iota
 	LESS_EQUALS    = iota
