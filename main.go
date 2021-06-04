@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"awate.in/commaql/core"
 	"awate.in/commaql/parser"
 )
 
 func main() {
-	query := "select distinct * from prices where id > 129 and name = 'soap'"
+	query := "select net, gross from prices"
 
 	tokenizer := parser.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
@@ -22,12 +20,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	csvFile, _ := os.Open("addresses.csv")
-
-	table, err := core.GetTableFromCSV(csvFile)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(table)
+	parser := parser.Parser{Tokens: tokens}
+	ok := parser.Run()
+	fmt.Printf("Parser run: %t\n", ok)
 }
