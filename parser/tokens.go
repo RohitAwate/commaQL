@@ -52,15 +52,18 @@ const (
 	EQUALS       = iota
 
 	// Operators
-	PLUS         = iota
-	MINUS        = iota
-	DIVIDE       = iota
-	LESS_THAN    = iota
-	GREATER_THAN = iota
-	EXPONENT     = iota
+	PLUS           = iota
+	MINUS          = iota
+	DIVIDE         = iota
+	LESS_THAN      = iota
+	GREATER_THAN   = iota
+	LESS_EQUALS    = iota
+	GREATER_EQUALS = iota
+	EXPONENT       = iota
 
-	IDENTIFER = iota
-	NUMBER    = iota
+	STRING     = iota
+	IDENTIFIER = iota
+	NUMBER     = iota
 )
 
 var SQLKeywordsToTokenType = map[string]TokenType{
