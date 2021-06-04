@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	query := "select net, gross FROM prices"
+	query := "select net, gross FROM prices where name > 10 or age = 87 * 7"
 
 	tokenizer := parser.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
