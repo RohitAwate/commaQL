@@ -1,5 +1,7 @@
 package parser
 
+import "fmt"
+
 func (p *Parser) selectStatement() bool {
 	// TODO: SELECT function()
 
@@ -7,9 +9,18 @@ func (p *Parser) selectStatement() bool {
 		return false
 	}
 
-	// TODO: return error if FROM not found
-	if p.match(FROM) {
-		return p.selectTablesList()
+	if !p.match(FROM) {
+		p.emitError(fmt.Sprintf("Expected 'FROM', found %s", p.peek().Lexeme))
+		return false
+	}
+
+	if !p.selectTablesList() {
+		p.emitError(fmt.Sprintf("Expected tables list, found %s", p.peek().Lexeme))
+		return false
+	}
+
+	if p.match(WHERE) {
+		return p.whereClause()
 	}
 
 	return true
@@ -17,12 +28,14 @@ func (p *Parser) selectStatement() bool {
 
 func (p *Parser) selectColumnsList() bool {
 	// TODO: Parse expressions
+
 	for p.match(IDENTIFIER) || p.match(STAR) {
 		if !p.match(COMMA) {
 			return true
 		}
 	}
 
+	p.emitError(fmt.Sprintf("Expected columns list, found %s", p.peek().Lexeme))
 	return false
 }
 

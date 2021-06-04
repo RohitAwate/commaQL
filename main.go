@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	query := "select net, gross from prices"
+	query := "select net, gross FROM prices"
 
 	tokenizer := parser.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
@@ -21,6 +21,10 @@ func main() {
 	}
 
 	parser := parser.Parser{Tokens: tokens}
-	ok := parser.Run()
+	ok, errors := parser.Run()
 	fmt.Printf("Parser run: %t\n", ok)
+
+	for _, err := range errors {
+		fmt.Println(err)
+	}
 }

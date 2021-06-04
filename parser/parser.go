@@ -17,12 +17,12 @@ type Parser struct {
 	errors  []ParserError
 }
 
-func (p *Parser) Run() bool {
+func (p *Parser) Run() (bool, []ParserError) {
 	for !p.eof() {
-		return p.statement()
+		return p.statement(), p.errors
 	}
 
-	return true
+	return true, p.errors
 }
 
 func (p *Parser) statement() bool {
@@ -62,4 +62,8 @@ func (p *Parser) consume() {
 
 func (p *Parser) eof() bool {
 	return p.current >= uint(len(p.Tokens))
+}
+
+func (p *Parser) emitError(msg string) {
+	p.errors = append(p.errors, ParserError{Message: msg, Location: p.peek().Location})
 }
