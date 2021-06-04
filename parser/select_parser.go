@@ -25,21 +25,3 @@ func (p *Parser) selectStatement() bool {
 
 	return true
 }
-
-func (p *Parser) selectColumnsList() bool {
-	// TODO: Parse expressions
-
-	for p.match(IDENTIFIER) || p.match(STAR) {
-		if !p.match(COMMA) {
-			return true
-		}
-	}
-
-	p.emitError(fmt.Sprintf("Expected columns list, found %s", p.peek().Lexeme))
-	return false
-}
-
-func (p *Parser) selectTablesList() bool {
-	// TODO: Parse joins and shizz
-	return p.match(IDENTIFIER)
-}
