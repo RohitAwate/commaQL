@@ -18,6 +18,7 @@ const (
 	COUNT    = iota
 	DESC     = iota
 	DISTINCT = iota
+	FALSE    = iota
 	FROM     = iota
 	FULL     = iota
 	GROUP    = iota
@@ -37,6 +38,7 @@ const (
 	RIGHT    = iota
 	SELECT   = iota
 	TOP      = iota
+	TRUE     = iota
 	UNION    = iota
 	WHERE    = iota
 
@@ -50,12 +52,13 @@ const (
 	CLOSE_PAREN  = iota
 	SEMICOLON    = iota
 	EQUALS       = iota
+	NOT_EQUALS   = iota
 
 	// Operators
 	PLUS           = iota
 	MINUS          = iota
 	DIVIDE         = iota
-	MDOULO         = iota
+	MODULO         = iota
 	LESS_THAN      = iota
 	GREATER_THAN   = iota
 	LESS_EQUALS    = iota
