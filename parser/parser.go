@@ -34,15 +34,11 @@ func (p *Parser) statement() bool {
 }
 
 func (p *Parser) peek() Token {
-	if p.current < uint(len(p.Tokens)) {
-		return p.Tokens[p.current]
-	}
-
-	return Token{}
+	return p.Tokens[p.current]
 }
 
 func (p *Parser) advance() {
-	if p.current < uint(len(p.Tokens)) {
+	if p.current < uint(len(p.Tokens))-1 {
 		p.current++
 	}
 }
