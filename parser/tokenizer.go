@@ -88,10 +88,11 @@ func (t *Tokenizer) eof() bool {
 
 func (t *Tokenizer) peek() byte {
 	if t.lookahead < uint(len(t.Query)) {
+		// TODO: Try keeping just this, since this guard is already present in advance()
 		return t.Query[t.lookahead]
-	} else {
-		return byte(0)
 	}
+
+	return byte(0)
 }
 
 func (t *Tokenizer) advance() {
@@ -127,8 +128,10 @@ func (t *Tokenizer) skipWhitespace() {
 			fallthrough
 		case '\t':
 			t.advance()
+			t.advanceWindow()
 		case '\n':
 			t.advance()
+			t.advanceWindow()
 		default:
 			return
 		}
@@ -157,7 +160,7 @@ func (t *Tokenizer) identifier() Token {
 	if IsSQLKeyword(token.Lexeme) {
 		token.Type = SQLKeywordsToTokenType[strings.ToUpper(token.Lexeme)]
 	} else {
-		token.Type = IDENTIFER
+		token.Type = IDENTIFIER
 	}
 
 	return token
