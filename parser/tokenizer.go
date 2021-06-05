@@ -61,8 +61,24 @@ func (t *Tokenizer) Run() ([]Token, []ParserError) {
 		case '/':
 			tokens = append(tokens, t.emitSingleCharToken(DIVIDE))
 		case '<':
+			if t.peekNext() == '=' {
+				t.advanceBy(2)
+				token := t.emitToken()
+				token.Type = LESS_EQUALS
+				tokens = append(tokens, token)
+				continue
+			}
+
 			tokens = append(tokens, t.emitSingleCharToken(LESS_THAN))
 		case '>':
+			if t.peekNext() == '=' {
+				t.advanceBy(2)
+				token := t.emitToken()
+				token.Type = GREATER_EQUALS
+				tokens = append(tokens, token)
+				continue
+			}
+
 			tokens = append(tokens, t.emitSingleCharToken(GREATER_THAN))
 		case '^':
 			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
@@ -95,10 +111,23 @@ func (t *Tokenizer) peek() byte {
 	return byte(0)
 }
 
-func (t *Tokenizer) advance() {
-	if t.lookahead < uint(len(t.Query)) {
-		t.lookahead++
+func (t *Tokenizer) peekNext() byte {
+	if t.lookahead+1 < uint(len(t.Query)) {
+		// TODO: Try keeping just this, since this guard is already present in advance()
+		return t.Query[t.lookahead+1]
 	}
+
+	return byte(0)
+}
+
+func (t *Tokenizer) advanceBy(delta uint) {
+	if t.lookahead+delta <= uint(len(t.Query)) {
+		t.lookahead += delta
+	}
+}
+
+func (t *Tokenizer) advance() {
+	t.advanceBy(1)
 }
 
 func (t *Tokenizer) advanceWindow() {
