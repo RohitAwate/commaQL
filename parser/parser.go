@@ -1,8 +1,6 @@
 package parser
 
-import (
-	"awate.in/commaql/core"
-)
+import "awate.in/commaql/table"
 
 type ParserError struct {
 	Message  string
@@ -10,7 +8,7 @@ type ParserError struct {
 }
 
 type Parser struct {
-	Table  core.Table
+	Table  table.Table
 	Tokens []Token
 
 	current uint
