@@ -151,11 +151,7 @@ func (t *Tokenizer) emitToken() Token {
 func (t *Tokenizer) skipWhitespace() {
 	for {
 		switch t.peek() {
-		case ' ':
-			fallthrough
-		case '\r':
-			fallthrough
-		case '\t':
+		case ' ', '\r', '\t':
 			t.advance()
 			t.advanceWindow()
 		case '\n':
