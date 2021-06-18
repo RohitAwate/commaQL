@@ -66,10 +66,15 @@ type GroupByClause struct {
 	Columns []string
 }
 
-func (l *Literal) amExpr()      {}
-func (ue *UnaryExpr) amExpr()   {}
-func (be *BinaryExpr) amExpr()  {}
-func (ge *GroupedExpr) amExpr() {}
+func (l Literal) amNode()      {}
+func (ue UnaryExpr) amNode()   {}
+func (be BinaryExpr) amNode()  {}
+func (ge GroupedExpr) amNode() {}
 
-func (obc *OrderByClause) amClause() {}
-func (gbc *GroupByClause) amClause() {}
+func (l Literal) amExpr()      {}
+func (ue UnaryExpr) amExpr()   {}
+func (be BinaryExpr) amExpr()  {}
+func (ge GroupedExpr) amExpr() {}
+
+func (obc OrderByClause) amClause() {}
+func (gbc GroupByClause) amClause() {}
