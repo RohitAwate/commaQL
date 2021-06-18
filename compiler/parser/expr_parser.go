@@ -218,6 +218,9 @@ func (p *Parser) literal() ast.Node {
 		fallthrough
 	case tokenizer.STRING:
 		p.consume()
+		return ast.Literal{
+			Meta: p.previous(),
+		}
 	case tokenizer.OPEN_PAREN:
 		return p.grouping()
 	}
