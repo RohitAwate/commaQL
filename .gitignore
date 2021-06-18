@@ -1,2 +1,6 @@
 # Directories
 .vscode/
+
+# Files
+*.csv
+*.txt
