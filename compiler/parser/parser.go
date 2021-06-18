@@ -1,21 +1,20 @@
 package parser
 
-import "awate.in/commaql/table"
-
-type ParserError struct {
-	Message  string
-	Location Location
-}
+import (
+	"awate.in/commaql/compiler"
+	"awate.in/commaql/compiler/parser/tokenizer"
+	"awate.in/commaql/table"
+)
 
 type Parser struct {
 	Table  table.Table
-	Tokens []Token
+	Tokens []compiler.Token
 
 	current uint
-	errors  []ParserError
+	errors  []compiler.Error
 }
 
-func (p *Parser) Run() (bool, []ParserError) {
+func (p *Parser) Run() (bool, []compiler.Error) {
 	for !p.eof() {
 		return p.statement(), p.errors
 	}
@@ -24,15 +23,19 @@ func (p *Parser) Run() (bool, []ParserError) {
 }
 
 func (p *Parser) statement() bool {
-	if p.match(SELECT) {
+	if p.match(tokenizer.SELECT) {
 		return p.selectStatement()
 	}
 
 	return false
 }
 
-func (p *Parser) peek() Token {
+func (p *Parser) peek() compiler.Token {
 	return p.Tokens[p.current]
+}
+
+func (p *Parser) previous() compiler.Token {
+	return p.Tokens[p.current-1]
 }
 
 func (p *Parser) advance() {
@@ -41,7 +44,7 @@ func (p *Parser) advance() {
 	}
 }
 
-func (p *Parser) match(tokenType TokenType) bool {
+func (p *Parser) match(tokenType compiler.TokenType) bool {
 	if p.peek().Type == tokenType {
 		p.advance()
 		return true
@@ -59,5 +62,5 @@ func (p *Parser) eof() bool {
 }
 
 func (p *Parser) emitError(msg string) {
-	p.errors = append(p.errors, ParserError{Message: msg, Location: p.peek().Location})
+	p.errors = append(p.errors, compiler.Error{Message: msg, Location: p.peek().Location})
 }

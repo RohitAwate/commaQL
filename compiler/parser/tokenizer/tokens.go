@@ -1,10 +1,10 @@
-package parser
+package tokenizer
 
 import (
 	"strings"
-)
 
-type TokenType uint
+	"awate.in/commaql/compiler"
+)
 
 const (
 	// SQL Keywords
@@ -70,7 +70,7 @@ const (
 	NUMBER     = iota
 )
 
-var SQLKeywordsToTokenType = map[string]TokenType{
+var SQLKeywordsToTokenType = map[string]compiler.TokenType{
 	"AND":      AND,
 	"ALL":      ALL,
 	"AS":       AS,
@@ -112,15 +112,4 @@ func IsSQLKeyword(identifier string) bool {
 	}
 
 	return false
-}
-
-type Location struct {
-	Line   uint
-	Column uint
-}
-
-type Token struct {
-	Type     TokenType
-	Lexeme   string
-	Location Location
 }

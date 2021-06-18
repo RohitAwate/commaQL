@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 
-	"awate.in/commaql/parser"
+	"awate.in/commaql/compiler/parser"
+	"awate.in/commaql/compiler/parser/tokenizer"
 )
 
 func main() {
 	query := "select net, gross FROM prices where name > 10 and height <= 7 or age = 87 * 7"
 
-	tokenizer := parser.Tokenizer{Query: query}
+	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
 
 	for _, token := range tokens {

@@ -1,6 +1,6 @@
 package ast
 
-import "awate.in/commaql/parser"
+import "awate.in/commaql/compiler"
 
 type Node interface {
 	// Have to resort to shit like this thanks to lack of a strict inheritance system in Go.
@@ -28,17 +28,17 @@ type Clause interface {
 }
 
 type Literal struct {
-	Meta parser.Token
+	Meta compiler.Token
 }
 
 type UnaryExpr struct {
-	Operator parser.Token
+	Operator compiler.Token
 	Operand  Expr
 }
 
 type BinaryExpr struct {
 	LeftOperand  Expr
-	Operator     parser.Token
+	Operator     compiler.Token
 	RightOperand Expr
 }
 
@@ -65,6 +65,11 @@ type OrderByClause struct {
 type GroupByClause struct {
 	Columns []string
 }
+
+func (l *Literal) amExpr()      {}
+func (ue *UnaryExpr) amExpr()   {}
+func (be *BinaryExpr) amExpr()  {}
+func (ge *GroupedExpr) amExpr() {}
 
 func (obc *OrderByClause) amClause() {}
 func (gbc *GroupByClause) amClause() {}

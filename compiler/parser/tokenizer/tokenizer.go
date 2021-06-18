@@ -1,8 +1,10 @@
-package parser
+package tokenizer
 
 import (
 	"fmt"
 	"strings"
+
+	"awate.in/commaql/compiler"
 )
 
 type Tokenizer struct {
@@ -13,16 +15,11 @@ type Tokenizer struct {
 	lookahead uint
 }
 
-func (t *Tokenizer) Reset() {
-	t.anchor = 0
-	t.lookahead = 0
-}
-
-func (t *Tokenizer) Run() ([]Token, []ParserError) {
+func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 	t.Reset()
 
-	var tokens []Token = make([]Token, 0)
-	var errors []ParserError = make([]ParserError, 0)
+	var tokens []compiler.Token = make([]compiler.Token, 0)
+	var errors []compiler.Error = make([]compiler.Error, 0)
 
 	for !t.eof() {
 		t.skipWhitespace()
@@ -91,8 +88,13 @@ func (t *Tokenizer) Run() ([]Token, []ParserError) {
 	return tokens, errors
 }
 
-func (t *Tokenizer) emitError(message string) ParserError {
-	return ParserError{
+func (t *Tokenizer) Reset() {
+	t.anchor = 0
+	t.lookahead = 0
+}
+
+func (t *Tokenizer) emitError(message string) compiler.Error {
+	return compiler.Error{
 		Message:  message,
 		Location: t.getLocationForWindow(),
 	}
@@ -138,14 +140,14 @@ func (t *Tokenizer) getLexemeForWindow() string {
 	return t.Query[t.anchor:t.lookahead]
 }
 
-func (t *Tokenizer) getLocationForWindow() Location {
+func (t *Tokenizer) getLocationForWindow() compiler.Location {
 	// TODO: Track line and columns
-	return Location{Line: 0, Column: 0}
+	return compiler.Location{Line: 0, Column: 0}
 }
 
-func (t *Tokenizer) emitToken() Token {
+func (t *Tokenizer) emitToken() compiler.Token {
 	defer t.advanceWindow()
-	return Token{Lexeme: t.getLexemeForWindow(), Location: t.getLocationForWindow()}
+	return compiler.Token{Lexeme: t.getLexemeForWindow(), Location: t.getLocationForWindow()}
 }
 
 func (t *Tokenizer) skipWhitespace() {
@@ -163,7 +165,7 @@ func (t *Tokenizer) skipWhitespace() {
 	}
 }
 
-func (t *Tokenizer) number() Token {
+func (t *Tokenizer) number() compiler.Token {
 	// TODO: Handle floats
 	for isDigit(t.peek()) {
 		t.advance()
@@ -175,7 +177,7 @@ func (t *Tokenizer) number() Token {
 	return token
 }
 
-func (t *Tokenizer) identifier() Token {
+func (t *Tokenizer) identifier() compiler.Token {
 	for isAlpha(t.peek()) {
 		t.advance()
 	}
@@ -191,7 +193,7 @@ func (t *Tokenizer) identifier() Token {
 	return token
 }
 
-func (t *Tokenizer) emitSingleCharToken(tokenType TokenType) Token {
+func (t *Tokenizer) emitSingleCharToken(tokenType compiler.TokenType) compiler.Token {
 	t.advance()
 	token := t.emitToken()
 	token.Type = tokenType
