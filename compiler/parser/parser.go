@@ -2,6 +2,7 @@ package parser
 
 import (
 	"awate.in/commaql/compiler"
+	"awate.in/commaql/compiler/ast"
 	"awate.in/commaql/compiler/parser/tokenizer"
 	"awate.in/commaql/table"
 )
@@ -14,20 +15,20 @@ type Parser struct {
 	errors  []compiler.Error
 }
 
-func (p *Parser) Run() (bool, []compiler.Error) {
+func (p *Parser) Run() (ast.Node, []compiler.Error) {
 	for !p.eof() {
 		return p.statement(), p.errors
 	}
 
-	return true, p.errors
+	return nil, p.errors
 }
 
-func (p *Parser) statement() bool {
+func (p *Parser) statement() ast.Node {
 	if p.match(tokenizer.SELECT) {
 		return p.selectStatement()
 	}
 
-	return false
+	return nil
 }
 
 func (p *Parser) peek() compiler.Token {

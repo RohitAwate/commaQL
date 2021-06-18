@@ -12,73 +12,125 @@ func (p *Parser) expression() ast.Node {
 }
 
 func (p *Parser) logicalOR() ast.Node {
-	if !p.logicalAND() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.logicalAND(); expr == nil {
+		return nil
 	}
 
 	for p.match(tokenizer.OR) {
-		if !p.logicalAND() {
-			return false
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs := p.logicalAND(); rhs != nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) logicalAND() ast.Node {
-	if !p.equality() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.equality(); expr == nil {
+		return nil
 	}
 
 	for p.match(tokenizer.AND) {
-		if !p.equality() {
-			return false
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs := p.equality(); rhs != nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) equality() ast.Node {
-	if !p.comparison() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.comparison(); expr == nil {
+		return nil
 	}
 
 	for p.match(tokenizer.EQUALS) || p.match(tokenizer.NOT_EQUALS) {
-		if !p.comparison() {
-			return false
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs := p.comparison(); rhs != nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) comparison() ast.Node {
-	if !p.term() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.term(); expr == nil {
+		return nil
 	}
 
 	for p.match(tokenizer.GREATER_THAN) || p.match(tokenizer.LESS_THAN) ||
 		p.match(tokenizer.GREATER_EQUALS) || p.match(tokenizer.LESS_EQUALS) {
-		if !p.term() {
-			return false
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs := p.term(); rhs != nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) term() ast.Node {
-	expr := p.factor()
+	var expr ast.Expr
+
+	if expr := p.factor(); expr == nil {
+		return nil
+	}
 
 	for p.match(tokenizer.PLUS) || p.match(tokenizer.MINUS) {
 		operator := p.previous()
-		rhs := p.factor()
+		var rhs ast.Expr
+
+		if rhs := p.factor(); rhs == nil {
+			return nil
+		}
 
 		expr = ast.BinaryExpr{
-			LeftOperand:  expr.(ast.Expr),
+			LeftOperand:  expr,
 			Operator:     operator,
-			RightOperand: rhs.(ast.Expr),
+			RightOperand: rhs,
 		}
 	}
 
@@ -86,36 +138,67 @@ func (p *Parser) term() ast.Node {
 }
 
 func (p *Parser) factor() ast.Node {
-	if !p.exponent() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.exponent(); expr == nil {
+		return nil
 	}
 
 	for p.match(tokenizer.STAR) || p.match(tokenizer.DIVIDE) || p.match(tokenizer.MODULO) {
-		if !p.exponent() {
-			return false
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs := p.exponent(); rhs != nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) exponent() ast.Node {
-	if !p.unary() {
-		return false
+	var expr ast.Expr
+
+	if expr := p.unary(); expr == nil {
+		return nil
 	}
 
-	for p.match(tokenizer.EQUALS) || p.match(tokenizer.NOT_EQUALS) {
-		if !p.comparison() {
-			return false
+	for p.match(tokenizer.EXPONENT) {
+		operator := p.previous()
+		var rhs ast.Expr
+
+		if rhs = p.comparison().(ast.Expr); rhs == nil {
+			return nil
+		}
+
+		expr = ast.BinaryExpr{
+			LeftOperand:  expr,
+			Operator:     operator,
+			RightOperand: rhs,
 		}
 	}
 
-	return true
+	return expr
 }
 
 func (p *Parser) unary() ast.Node {
 	if p.match(tokenizer.MINUS) || p.match(tokenizer.NOT) {
-		return p.unary()
+		var expr ast.Expr
+
+		if expr := p.unary(); expr == nil {
+			return nil
+		}
+
+		return ast.UnaryExpr{
+			Operator: p.previous(),
+			Operand:  expr,
+		}
 	}
 
 	return p.literal()
@@ -123,40 +206,41 @@ func (p *Parser) unary() ast.Node {
 
 func (p *Parser) literal() ast.Node {
 	switch p.peek().Type {
-	case IDENTIFIER:
+	case tokenizer.IDENTIFIER:
 		fallthrough
-	case NUMBER:
+	case tokenizer.NUMBER:
 		fallthrough
-	case TRUE:
+	case tokenizer.TRUE:
 		fallthrough
-	case FALSE:
+	case tokenizer.FALSE:
 		fallthrough
-	case NULL:
+	case tokenizer.NULL:
 		fallthrough
-	case STRING:
+	case tokenizer.STRING:
 		p.consume()
-	case OPEN_PAREN:
+	case tokenizer.OPEN_PAREN:
 		return p.grouping()
-	default:
-		p.emitError(fmt.Sprintf("Unexpected token: %s", p.peek().Lexeme))
-		return false
 	}
 
-	return true
+	p.emitError(fmt.Sprintf("Unexpected token: %s", p.peek().Lexeme))
+	return nil
 }
 
 func (p *Parser) grouping() ast.Node {
 	// Consume the '('
 	p.consume()
 
-	if !p.expression() {
-		return false
+	var innerExpr ast.Expr
+
+	if innerExpr := p.expression(); innerExpr == nil {
+		p.emitError("Expected expression")
+		return nil
 	}
 
-	if !p.match(tokenizer.CLOSE_PAREN) {
+	if p.match(tokenizer.CLOSE_PAREN) {
 		p.emitError("Expected ')'")
-		return false
+		return nil
 	}
 
-	return true
+	return ast.GroupedExpr{InnerExpr: innerExpr}
 }

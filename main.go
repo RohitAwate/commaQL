@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	query := "select net, gross FROM prices where name > 10 and height <= 7 or age = 87 * 7"
+	query := "select net, gross FROM prices"
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
@@ -23,7 +23,7 @@ func main() {
 
 	parser := parser.Parser{Tokens: tokens}
 	ok, errors := parser.Run()
-	fmt.Printf("Parser run: %t\n", ok)
+	fmt.Printf("Parser run: %+v\n", ok)
 
 	for _, err := range errors {
 		fmt.Println(err)
