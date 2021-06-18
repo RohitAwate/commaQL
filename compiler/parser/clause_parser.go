@@ -9,7 +9,6 @@ import (
 
 func (p *Parser) selectColumnsList() []string {
 	// TODO: Parse expressions
-
 	var columnsList []string
 
 	for p.match(tokenizer.IDENTIFIER) || p.match(tokenizer.STAR) {
@@ -39,23 +38,23 @@ func (p *Parser) selectTablesList() []string {
 }
 
 func (p *Parser) whereClause() ast.Node {
-	var expr ast.Expr
-	if expr := p.expression(); expr == nil {
+	expr := p.expression()
+	if expr == nil {
 		return nil
 	}
 
 	for p.match(tokenizer.AND) || p.match(tokenizer.OR) {
 		operator := p.previous()
-		var rhs ast.Expr
 
-		if rhs = p.expression().(ast.Expr); rhs == nil {
+		rhs := p.expression()
+		if rhs == nil {
 			return nil
 		}
 
 		expr = ast.BinaryExpr{
-			LeftOperand:  expr,
+			LeftOperand:  expr.(ast.Expr),
 			Operator:     operator,
-			RightOperand: rhs,
+			RightOperand: rhs.(ast.Expr),
 		}
 	}
 
