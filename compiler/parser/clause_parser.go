@@ -1,12 +1,16 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+
+	"awate.in/commaql/compiler/parser/tokenizer"
+)
 
 func (p *Parser) selectColumnsList() bool {
 	// TODO: Parse expressions
 
-	for p.match(IDENTIFIER) || p.match(STAR) {
-		if !p.match(COMMA) {
+	for p.match(tokenizer.IDENTIFIER) || p.match(tokenizer.STAR) {
+		if !p.match(tokenizer.COMMA) {
 			return true
 		}
 	}
@@ -17,7 +21,7 @@ func (p *Parser) selectColumnsList() bool {
 
 func (p *Parser) selectTablesList() bool {
 	// TODO: Parse joins and shizz
-	return p.match(IDENTIFIER)
+	return p.match(tokenizer.IDENTIFIER)
 }
 
 func (p *Parser) whereClause() bool {
@@ -25,7 +29,7 @@ func (p *Parser) whereClause() bool {
 		return false
 	}
 
-	for p.match(AND) || p.match(OR) {
+	for p.match(tokenizer.AND) || p.match(tokenizer.OR) {
 		if !p.expression() {
 			return false
 		}
