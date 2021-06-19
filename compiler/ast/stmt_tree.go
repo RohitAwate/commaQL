@@ -4,7 +4,7 @@ type SelectStmt struct {
 	Columns       []string
 	Tables        []string
 	WhereClause   Expr
-	Limit         int
+	Limit         Expr
 	GroupByClause GroupByClause
 	OrderByClause OrderByClause
 }
