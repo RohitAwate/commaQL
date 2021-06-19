@@ -1,5 +1,7 @@
 ![commaQL Logo](assets/logo.png)
 
-<center>
-<h2>Run SQL queries on CSVs!</h2>
-</center>
+<p align="center">
+Run SQL queries on CSV files!
+</p>
+
+---
