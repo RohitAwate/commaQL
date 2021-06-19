@@ -32,7 +32,11 @@ func (p *Parser) statement() ast.Node {
 }
 
 func (p *Parser) peek() compiler.Token {
-	return p.Tokens[p.current]
+	if p.current < uint(len(p.Tokens)) {
+		return p.Tokens[p.current]
+	}
+
+	return p.Tokens[len(p.Tokens)-1]
 }
 
 func (p *Parser) previous() compiler.Token {
@@ -40,7 +44,7 @@ func (p *Parser) previous() compiler.Token {
 }
 
 func (p *Parser) advance() {
-	if p.current < uint(len(p.Tokens))-1 {
+	if p.current < uint(len(p.Tokens)) {
 		p.current++
 	}
 }
