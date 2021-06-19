@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"awate.in/commaql/compiler"
 	"awate.in/commaql/compiler/ast"
 	"awate.in/commaql/compiler/parser/tokenizer"
@@ -15,12 +17,19 @@ type Parser struct {
 	errors  []compiler.Error
 }
 
-func (p *Parser) Run() (ast.Node, []compiler.Error) {
+func (p *Parser) Run() ([]ast.Stmt, []compiler.Error) {
+	var statements []ast.Stmt
+
 	for !p.eof() {
-		return p.statement(), p.errors
+		statement := p.statement()
+		if statement == nil {
+			break
+		}
+
+		statements = append(statements, statement.(ast.Stmt))
 	}
 
-	return nil, p.errors
+	return statements, p.errors
 }
 
 func (p *Parser) statement() ast.Node {
@@ -28,6 +37,7 @@ func (p *Parser) statement() ast.Node {
 		return p.selectStatement()
 	}
 
+	p.emitError(fmt.Sprintf("Expected statement, found %s", p.peek().Lexeme))
 	return nil
 }
 

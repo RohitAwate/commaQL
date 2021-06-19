@@ -14,7 +14,7 @@ func prettyPrint(i interface{}) {
 }
 
 func main() {
-	query := "select net, gross FROM prices where id > 10"
+	query := "select net, gross FROM prices limit 10*2 where id > 1"
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
@@ -28,9 +28,9 @@ func main() {
 	}
 
 	parser := parser.Parser{Tokens: tokens}
-	tree, errors := parser.Run()
+	statements, errors := parser.Run()
 
-	prettyPrint(tree)
+	prettyPrint(statements)
 
 	for _, err := range errors {
 		fmt.Println(err)
