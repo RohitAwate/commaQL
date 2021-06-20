@@ -27,13 +27,14 @@ type Tokenizer struct {
 	// Absolute trackers
 	anchor    uint
 	lookahead uint
+
+	errors []compiler.Error
 }
 
 func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 	t.Reset()
 
 	var tokens []compiler.Token = make([]compiler.Token, 0)
-	var errors []compiler.Error = make([]compiler.Error, 0)
 
 	for !t.eof() {
 		t.skipWhitespace()
@@ -53,6 +54,17 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 			tokens = append(tokens, t.emitSingleCharToken(COMMA))
 		case '\'':
 			tokens = append(tokens, t.stringLiteral())
+		case '"':
+			// Consume opening quote
+			t.consume()
+			tokens = append(tokens, t.identifier())
+			if t.peek() != '"' {
+				t.emitError(fmt.Sprintf("Expected \", found %c", t.peek()))
+				continue
+			}
+
+			// Consume closing quote
+			t.consume()
 		case '.':
 			tokens = append(tokens, t.emitSingleCharToken(DOT))
 		case '(':
@@ -92,12 +104,11 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 		case '^':
 			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
 		default:
-			errMsg := fmt.Sprintf("Unexpected token: %c", t.peek())
-			errors = append(errors, t.emitError(errMsg))
+			t.emitError(fmt.Sprintf("Unexpected token: %c", t.peek()))
 		}
 	}
 
-	return tokens, errors
+	return tokens, t.errors
 }
 
 func (t *Tokenizer) Reset() {
@@ -105,11 +116,8 @@ func (t *Tokenizer) Reset() {
 	t.lookahead = 0
 }
 
-func (t *Tokenizer) emitError(message string) compiler.Error {
-	return compiler.Error{
-		Message:  message,
-		Location: t.getLocationForWindow(),
-	}
+func (t *Tokenizer) emitError(msg string) {
+	t.errors = append(t.errors, compiler.Error{Message: msg, Location: t.getLocationForWindow()})
 }
 
 func (t *Tokenizer) eof() bool {

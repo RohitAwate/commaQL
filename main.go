@@ -28,7 +28,7 @@ func prettyPrint(i interface{}) {
 }
 
 func main() {
-	query := "select net, gross FROM prices limit 10*2 where name = 'rohit'"
+	query := "select net, gross FROM prices limit 10*2 where name = 'rohit' and \"type = 'card'"
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
