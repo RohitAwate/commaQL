@@ -51,7 +51,7 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 			tokens = append(tokens, t.emitSingleCharToken(STAR))
 		case ',':
 			tokens = append(tokens, t.emitSingleCharToken(COMMA))
-		case '\'', '"':
+		case '\'':
 			tokens = append(tokens, t.stringLiteral())
 		case '.':
 			tokens = append(tokens, t.emitSingleCharToken(DOT))
@@ -148,6 +148,11 @@ func (t *Tokenizer) advanceWindow() {
 	t.anchor = t.lookahead
 }
 
+func (t *Tokenizer) consume() {
+	t.advance()
+	t.advanceWindow()
+}
+
 func (t *Tokenizer) getLexemeForWindow() string {
 	return t.Query[t.anchor:t.lookahead]
 }
@@ -209,8 +214,7 @@ func (t *Tokenizer) stringLiteral() compiler.Token {
 	startingQuote := t.peek()
 
 	// Consume opening quote
-	t.advance()
-	t.advanceWindow()
+	t.consume()
 
 	for t.peek() != startingQuote {
 		t.advance()
@@ -220,8 +224,7 @@ func (t *Tokenizer) stringLiteral() compiler.Token {
 	stringToken.Type = STRING
 
 	// Consume closing quote
-	t.advance()
-	t.advanceWindow()
+	t.consume()
 
 	return stringToken
 }
