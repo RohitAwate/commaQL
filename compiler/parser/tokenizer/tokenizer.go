@@ -1,11 +1,11 @@
 // Copyright 2021 Rohit Awate
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,10 +51,8 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 			tokens = append(tokens, t.emitSingleCharToken(STAR))
 		case ',':
 			tokens = append(tokens, t.emitSingleCharToken(COMMA))
-		case '\'':
-			tokens = append(tokens, t.emitSingleCharToken(SINGLE_QUOTE))
-		case '"':
-			tokens = append(tokens, t.emitSingleCharToken(DOUBLE_QUOTE))
+		case '\'', '"':
+			tokens = append(tokens, t.stringLiteral())
 		case '.':
 			tokens = append(tokens, t.emitSingleCharToken(DOT))
 		case '(':
@@ -205,6 +203,27 @@ func (t *Tokenizer) identifier() compiler.Token {
 	}
 
 	return token
+}
+
+func (t *Tokenizer) stringLiteral() compiler.Token {
+	startingQuote := t.peek()
+
+	// Consume opening quote
+	t.advance()
+	t.advanceWindow()
+
+	for t.peek() != startingQuote {
+		t.advance()
+	}
+
+	stringToken := t.emitToken()
+	stringToken.Type = STRING
+
+	// Consume closing quote
+	t.advance()
+	t.advanceWindow()
+
+	return stringToken
 }
 
 func (t *Tokenizer) emitSingleCharToken(tokenType compiler.TokenType) compiler.Token {
