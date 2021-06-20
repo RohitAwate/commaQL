@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ast
+type Walker interface {
+	visitSelectStmt(ss *SelectStmt)
 
-type SelectStmt struct {
-	Columns       []string
-	Tables        []string
-	WhereClause   Expr
-	Limit         Expr
-	GroupByClause GroupByClause
-	OrderByClause OrderByClause
+	visitOrderByClause(obc *OrderByClause)
+	visitGroupByClause(gbc *GroupByClause)
+
+	visitLiteral(l *Literal)
+	visitUnaryExpr(ue *UnaryExpr)
+	visitBinaryExpr(be *BinaryExpr)
+	visitGroupedExpr(ge *GroupedExpr)
 }
-
-func (ss SelectStmt) amNode() {}
-func (ss SelectStmt) amStmt() {}
