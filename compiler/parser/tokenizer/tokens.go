@@ -22,66 +22,61 @@ import (
 
 const (
 	// SQL Keywords
-	AND      = iota
-	ALL      = iota
-	AS       = iota
-	ASC      = iota
-	BETWEEN  = iota
-	BY       = iota
-	CHECK    = iota
-	COUNT    = iota
-	DESC     = iota
-	DISTINCT = iota
-	FALSE    = iota
-	FROM     = iota
-	FULL     = iota
-	GROUP    = iota
-	HAVING   = iota
-	IN       = iota
-	INNER    = iota
-	IS       = iota
-	JOIN     = iota
-	LEFT     = iota
-	LIKE     = iota
-	LIMIT    = iota
-	NOT      = iota
-	NULL     = iota
-	OR       = iota
-	ORDER    = iota
-	OUTER    = iota
-	RIGHT    = iota
-	SELECT   = iota
-	TOP      = iota
-	TRUE     = iota
-	UNION    = iota
-	WHERE    = iota
-
-	// Punctuation
-	STAR         = iota
-	COMMA        = iota
-	SINGLE_QUOTE = iota
-	DOUBLE_QUOTE = iota
-	DOT          = iota
-	OPEN_PAREN   = iota
-	CLOSE_PAREN  = iota
-	SEMICOLON    = iota
-	EQUALS       = iota
-	NOT_EQUALS   = iota
-
-	// Operators
-	PLUS           = iota
-	MINUS          = iota
-	DIVIDE         = iota
-	MODULO         = iota
-	LESS_THAN      = iota
-	GREATER_THAN   = iota
-	LESS_EQUALS    = iota
-	GREATER_EQUALS = iota
-	EXPONENT       = iota
-
-	STRING     = iota
-	IDENTIFIER = iota
-	NUMBER     = iota
+	AND = iota
+	ALL
+	AS
+	ASC
+	BETWEEN
+	BY
+	CHECK
+	COUNT
+	DESC
+	DISTINCT
+	FALSE
+	FROM
+	FULL
+	GROUP
+	HAVING
+	IN
+	INNER
+	IS
+	JOIN
+	LEFT
+	LIKE
+	LIMIT
+	NOT
+	NULL
+	OR
+	ORDER
+	OUTER
+	RIGHT
+	SELECT
+	TOP
+	TRUE
+	UNION
+	WHERE
+	STAR // Punctuation
+	COMMA
+	SINGLE_QUOTE
+	DOUBLE_QUOTE
+	DOT
+	OPEN_PAREN
+	CLOSE_PAREN
+	SEMICOLON
+	EQUALS
+	NOT_EQUALS
+	PLUS // Operators
+	MINUS
+	DIVIDE
+	MODULO
+	LESS_THAN
+	GREATER_THAN
+	LESS_EQUALS
+	GREATER_EQUALS
+	EXPONENT
+	STRING
+	IDENTIFIER
+	NUMBER
 )
 
 var SQLKeywordsToTokenType = map[string]compiler.TokenType{
