@@ -14,6 +14,8 @@
 
 package compiler
 
+import "awate.in/commaql/vm/types"
+
 const (
 	OP_ADD = iota + 6969
 	OP_SUBTRACT
@@ -25,5 +27,10 @@ const (
 type OpCode uint
 
 type Bytecode struct {
-	Blob []OpCode
+	Blob          []OpCode
+	ConstantsPool []types.Value
+}
+
+func (b *Bytecode) AddConstant(v types.Value) {
+
 }

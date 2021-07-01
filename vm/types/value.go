@@ -12,22 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package compiler
+package types
 
-type Location struct {
-	Line   uint
-	Column uint
+type Value interface {
+	amValue()
 }
 
-type TokenType uint
-
-type Token struct {
-	Type     TokenType
-	Lexeme   string
-	Location Location
+type Number struct {
+	Meta float64
 }
 
-type Error struct {
-	Message  string
-	Location Location
-}
+func (n *Number) amValue() {}
