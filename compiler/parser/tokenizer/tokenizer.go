@@ -59,7 +59,7 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 			t.consume()
 			tokens = append(tokens, t.identifier())
 			if t.peek() != '"' {
-				t.emitError(fmt.Sprintf("Expected \", found %c", t.peek()))
+				t.emitError(fmt.Sprintf("Expected \", found '%c'", t.peek()))
 				continue
 			}
 
