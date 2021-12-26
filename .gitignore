@@ -1,6 +1,6 @@
 # Directories
 .vscode/
-.VSCodeCounter/
+.idea/
 
 # Files
 *.csv
