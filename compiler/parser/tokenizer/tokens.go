@@ -114,11 +114,6 @@ var SQLKeywordsToTokenType = map[string]compiler.TokenType{
 }
 
 func IsSQLKeyword(identifier string) bool {
-	for keyword := range SQLKeywordsToTokenType {
-		if strings.ToUpper(identifier) == keyword {
-			return true
-		}
-	}
-
-	return false
+	_, ok := SQLKeywordsToTokenType[strings.ToUpper(identifier)]
+	return ok
 }
