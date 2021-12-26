@@ -51,7 +51,7 @@ func (p *Parser) statement() ast.Node {
 		statement = p.selectStatement()
 	}
 
-	if p.match(tokenizer.SEMICOLON) {
+	if p.eof() || p.match(tokenizer.SEMICOLON) {
 		return statement
 	} else {
 		p.emitError(fmt.Sprintf("Expected semicolon, found '%s'", p.peek().Lexeme))
