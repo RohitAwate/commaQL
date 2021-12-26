@@ -5,3 +5,7 @@
 # Files
 *.csv
 *.txt
+
+# Added by cargo
+
+/target

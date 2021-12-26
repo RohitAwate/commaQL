@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500mm"
+   height="100mm"
+   viewBox="0 0 500 100"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (1:1.1+202105261517+ce6663b3b7)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     width="500mm"
+     inkscape:zoom="0.56569164"
+     inkscape:cx="851.17044"
+     inkscape:cy="136.11656"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter439"
+       x="-0.022993422"
+       y="-0.12911016"
+       width="1.0485269"
+       height="1.2724827">
+      <feFlood
+         flood-opacity="0.313726"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood429" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite431" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="2.3"
+         result="blur"
+         id="feGaussianBlur433" />
+      <feOffset
+         dx="1"
+         dy="1"
+         result="offset"
+         id="feOffset435" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite437" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:18.5208;stroke-linejoin:round;paint-order:markers stroke fill"
+       id="rect21521"
+       width="500"
+       height="100"
+       x="1.4210855e-14"
+       y="-3.5527137e-15" />
+    <text
+       xml:space="preserve"
+       style="font-size:88.1944px;line-height:1.25;font-family:sans-serif;letter-spacing:-5.29166667px;opacity:1;fill:#000000;fill-opacity:1;stroke:#17e72b;stroke-width:7.065;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:24.111;stroke-opacity:1;paint-order:normal;filter:url(#filter439)"
+       x="54.120365"
+       y="80.294777"
+       id="text1467"
+       inkscape:export-filename="/home/rohit/Code/Go/commaQL/assets/logo.png"
+       inkscape:export-xdpi="61.470001"
+       inkscape:export-ydpi="61.470001"><tspan
+         sodipodi:role="line"
+         id="tspan1465"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:88.1944px;font-family:'Nimbus Sans';-inkscape-font-specification:'Nimbus Sans';fill:#000000;fill-opacity:1;stroke:#17e72b;stroke-width:7.065;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:24.111;stroke-opacity:1;paint-order:stroke fill markers"
+         x="54.120365"
+         y="80.294777"
+         dx="0 0 0 0 0 0">comma<tspan
+   id="tspan32580"
+   style="word-spacing:0.0132291px;stroke:#b62feb;stroke-width:7.065;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">QL</tspan></tspan></text>
+  </g>
+</svg>
