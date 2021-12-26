@@ -17,9 +17,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"awate.in/commaql/compiler/parser"
 	"awate.in/commaql/compiler/parser/tokenizer"
+	"awate.in/commaql/table"
 )
 
 func prettyPrint(i interface{}) {
@@ -49,4 +51,8 @@ func main() {
 	for _, err := range errors {
 		fmt.Println(err)
 	}
+
+	file, _ := os.Open("imdb.csv")
+	imdb, _ := table.GetTableFromCSV(file)
+	fmt.Println(imdb)
 }
