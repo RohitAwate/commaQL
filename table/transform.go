@@ -17,6 +17,9 @@ package table
 import "strconv"
 
 type SQLType int
+type SQLTypeSet interface {
+	int | float64 | string | bool
+}
 
 const (
 	SQL_INT    = iota

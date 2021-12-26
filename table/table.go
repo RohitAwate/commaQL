@@ -14,14 +14,15 @@
 
 package table
 
-type Column struct {
+type Column[T SQLTypeSet] struct {
 	Name string
 	Type SQLType
+	Data []T
 }
 
-type Table struct {
+type Table[T SQLTypeSet] struct {
 	Name    string
-	Columns []Column
+	Columns []Column[T]
 
 	ContainsHeader bool
 }

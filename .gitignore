@@ -1,5 +1,6 @@
 # Directories
 .vscode/
+.VSCodeCounter/
 
 # Files
 *.csv
