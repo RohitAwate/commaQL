@@ -59,7 +59,7 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 			t.consume()
 			tokens = append(tokens, t.identifier())
 			if t.peek() != '"' {
-				t.emitError(fmt.Sprintf("Expected \", found '%c'", t.peek()))
+				t.emitError(fmt.Sprintf("Expected closing quote \", found '%c'", t.peek()))
 				continue
 			}
 
@@ -104,7 +104,7 @@ func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 		case '^':
 			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
 		default:
-			t.emitError(fmt.Sprintf("Unexpected token: %c", t.peek()))
+			t.emitError(fmt.Sprintf("Unexpected token: '%c'", t.peek()))
 		}
 	}
 

@@ -1,11 +1,11 @@
 // Copyright 2021 Rohit Awate
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -232,7 +232,7 @@ func (p *Parser) literal() ast.Node {
 		return p.grouping()
 	}
 
-	p.emitError(fmt.Sprintf("Unexpected token: %s", p.peek().Lexeme))
+	p.emitError(fmt.Sprintf("Unexpected token: '%s'", p.peek().Lexeme))
 	return nil
 }
 
@@ -242,11 +242,13 @@ func (p *Parser) grouping() ast.Node {
 
 	innerExpr := p.expression()
 	if innerExpr == nil {
+		// TODO: Print out location as well
 		p.emitError("Expected expression")
 		return nil
 	}
 
 	if p.match(tokenizer.CLOSE_PAREN) {
+		// TODO: Print out location as well
 		p.emitError("Expected ')'")
 		return nil
 	}

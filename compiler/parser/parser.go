@@ -45,11 +45,18 @@ func (p *Parser) Run() ([]ast.Stmt, []compiler.Error) {
 }
 
 func (p *Parser) statement() ast.Node {
+	var statement ast.Node
+
 	if p.match(tokenizer.SELECT) {
-		return p.selectStatement()
+		statement = p.selectStatement()
 	}
 
-	p.emitError(fmt.Sprintf("Expected statement, found %s", p.peek().Lexeme))
+	if p.match(tokenizer.SEMICOLON) {
+		return statement
+	} else {
+		p.emitError(fmt.Sprintf("Expected semicolon, found '%s'", p.peek().Lexeme))
+	}
+
 	return nil
 }
 
