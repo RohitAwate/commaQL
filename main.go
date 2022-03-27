@@ -39,8 +39,6 @@ func main() {
 				payment_date
 			FROM
 				customer
-			INNER JOIN payment 
-			    ON payment.customer_id = customer.customer_id
 			ORDER BY payment_date;`
 
 	tokenizer := tokenizer.Tokenizer{Query: query}

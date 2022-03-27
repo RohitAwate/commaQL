@@ -204,7 +204,7 @@ func (t *Tokenizer) number() compiler.Token {
 }
 
 func (t *Tokenizer) identifier() compiler.Token {
-	for isAlpha(t.peek()) {
+	for t.peek() == '_' || isAlpha(t.peek()) {
 		t.advance()
 	}
 
