@@ -1,4 +1,4 @@
-// Copyright 2021 Rohit Awate
+// Copyright 2021-22 Rohit Awate
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -182,6 +182,7 @@ func (t *Tokenizer) skipWhitespace() {
 			t.advance()
 			t.advanceWindow()
 		case '\n':
+			// TODO: Add line number tracking
 			t.advance()
 			t.advanceWindow()
 		default:
