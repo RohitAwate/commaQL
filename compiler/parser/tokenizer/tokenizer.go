@@ -239,6 +239,10 @@ func (t *Tokenizer) stringLiteral() compiler.Token {
 }
 
 func (t *Tokenizer) emitSingleCharToken(tokenType compiler.TokenType) compiler.Token {
+	// TODO: Try and get rid of this and use just the emitToken method with a new
+	// parameter that accept the token type. That would involve playing around with advance
+	// since that appears to be handle by respective logic just before calling emitToken.
+	// Might need another parameter that advances and then emits token.
 	t.advance()
 	token := t.emitToken()
 	token.Type = tokenType
