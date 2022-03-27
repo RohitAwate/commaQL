@@ -14,7 +14,7 @@
 
 package compiler
 
-import "awate.in/commaql/vm/types"
+import "github.com/RohitAwate/commaql/vm/types"
 
 const (
 	OP_ADD = iota + 6969

@@ -17,9 +17,9 @@ package parser
 import (
 	"fmt"
 
-	"awate.in/commaql/compiler"
-	"awate.in/commaql/compiler/ast"
-	"awate.in/commaql/compiler/parser/tokenizer"
+	"github.com/RohitAwate/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler/ast"
+	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 )
 
 type Parser struct {

@@ -17,7 +17,7 @@ package tokenizer
 import (
 	"strings"
 
-	"awate.in/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler"
 )
 
 const (

@@ -15,8 +15,8 @@
 package codegen
 
 import (
-	"awate.in/commaql/compiler"
-	"awate.in/commaql/compiler/ast"
+	"github.com/RohitAwate/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler/ast"
 )
 
 type CodeGenerator struct {

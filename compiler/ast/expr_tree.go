@@ -14,7 +14,7 @@
 
 package ast
 
-import "awate.in/commaql/compiler"
+import "github.com/RohitAwate/commaql/compiler"
 
 type Literal struct {
 	Meta compiler.Token

@@ -17,8 +17,8 @@ package parser
 import (
 	"fmt"
 
-	"awate.in/commaql/compiler/ast"
-	"awate.in/commaql/compiler/parser/tokenizer"
+	"github.com/RohitAwate/commaql/compiler/ast"
+	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 )
 
 func (p *Parser) expression() ast.Node {

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"awate.in/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler"
 )
 
 type Tokenizer struct {

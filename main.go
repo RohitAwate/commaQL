@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"os"
 
-	"awate.in/commaql/compiler/parser"
-	"awate.in/commaql/compiler/parser/tokenizer"
-	"awate.in/commaql/table"
+	"github.com/RohitAwate/commaql/compiler/parser"
+	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"github.com/RohitAwate/commaql/table"
 )
 
 func prettyPrint(i interface{}) {
@@ -30,7 +30,18 @@ func prettyPrint(i interface{}) {
 }
 
 func main() {
-	query := "select net, gross FROM prices where name = 'rohit' and \"type = 'card' limit 10*2 "
+	// query := "select net, gross FROM prices where name = 'rohit' and \"type = 'card' limit 10*2 "
+	query := `SELECT
+				customer_id,
+				first_name,
+				last_name,
+				amount,
+				payment_date
+			FROM
+				customer
+			INNER JOIN payment 
+			    ON payment.customer_id = customer.customer_id
+			ORDER BY payment_date;`
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()
