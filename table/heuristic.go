@@ -20,8 +20,10 @@ import (
 )
 
 func isHeaderRow(row []string) bool {
-	return areNonEmptyStrings(row) &&
-		!containsEmails(row) &&
+	// We used to use areNonEmptyStrings() as a
+	// heuristic as well, but some datasets may
+	// have empty column names for serial numbers.
+	return !containsEmails(row) &&
 		!containsNumbers(row) &&
 		!containsBooleans(row)
 }

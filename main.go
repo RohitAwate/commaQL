@@ -61,7 +61,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	file, _ := os.Open("imdb.csv")
-	imdb, _ := table.GetTableFromCSV(file)
-	fmt.Println(imdb)
+	file, _ := os.Open("superhero.csv")
+	superhero, _ := table.GetTableFromCSV(file)
+	fmt.Println(superhero)
 }
