@@ -39,7 +39,7 @@ func main() {
 				payment_date
 			FROM
 				customer
-			ORDER BY payment_date;`
+			ORDER BY payment_date, amount;`
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
 	tokens, errors := tokenizer.Run()

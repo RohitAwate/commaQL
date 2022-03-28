@@ -15,18 +15,18 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 )
 
-func (p *Parser) selectColumnsList() []string {
-	// TODO: Parse expressions
-	var columnsList []string
+func (p *Parser) selectColumnsList() []ast.SelectColumnNode {
+	var columnsList []ast.SelectColumnNode
 
 	for p.match(tokenizer.IDENTIFIER) || p.match(tokenizer.STAR) {
-		column := p.previous().Lexeme
+		column := ast.SelectColumnNode{
+			ColumnToken: p.previous(),
+		}
+
 		columnsList = append(columnsList, column)
 
 		if !p.match(tokenizer.COMMA) {
@@ -34,20 +34,51 @@ func (p *Parser) selectColumnsList() []string {
 		}
 	}
 
-	p.emitError(fmt.Sprintf("Expected columns list, found '%s'", p.peek().Lexeme))
 	return nil
 }
 
-func (p *Parser) selectTablesList() []string {
-	var tablesList []string
+func (p *Parser) selectTablesList() []ast.TableNode {
+	var tablesList []ast.TableNode
 
 	if p.match(tokenizer.IDENTIFIER) {
-		table := p.previous().Lexeme
+		table := ast.TableNode{
+			TableToken: p.previous(),
+		}
+
 		tablesList = append(tablesList, table)
 		return tablesList
 	}
 
-	p.emitError(fmt.Sprintf("Expected tables list, found '%s'", p.peek().Lexeme))
+	return nil
+}
+
+func (p *Parser) orderByClause() *ast.OrderByClause {
+	var orderByColumns []ast.ColumnForOrderByClause
+	if orderByColumns = p.orderByList(); orderByColumns == nil {
+		p.emitExpectedError("table identifier(s)")
+		return nil
+	}
+
+	return &ast.OrderByClause{
+		Columns: orderByColumns,
+	}
+}
+
+func (p *Parser) orderByList() []ast.ColumnForOrderByClause {
+	var orderByColumns []ast.ColumnForOrderByClause
+
+	for p.match(tokenizer.IDENTIFIER) {
+		column := ast.ColumnForOrderByClause{
+			ColumnToken: p.previous(),
+		}
+
+		orderByColumns = append(orderByColumns, column)
+
+		if !p.match(tokenizer.COMMA) {
+			return orderByColumns
+		}
+	}
+
 	return nil
 }
 

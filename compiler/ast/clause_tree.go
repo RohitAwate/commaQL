@@ -14,9 +14,13 @@
 
 package ast
 
+import "github.com/RohitAwate/commaql/compiler"
+
 type ColumnForOrderByClause struct {
-	Name      string
-	Ascending bool
+	ColumnToken compiler.Token
+	OrderToken  compiler.Token
+	Name        string
+	Ascending   bool
 }
 
 type OrderByClause struct {
@@ -24,7 +28,7 @@ type OrderByClause struct {
 }
 
 type GroupByClause struct {
-	Columns []string
+	Columns []compiler.Token
 }
 
 func (obc OrderByClause) amNode() {}

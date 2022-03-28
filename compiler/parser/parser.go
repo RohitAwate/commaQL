@@ -54,7 +54,7 @@ func (p *Parser) statement() ast.Node {
 	if p.eof() || p.match(tokenizer.SEMICOLON) {
 		return statement
 	} else {
-		p.emitError(fmt.Sprintf("Expected semicolon, found '%s'", p.peek().Lexeme))
+		p.emitExpectedError("semicolon")
 	}
 
 	return nil
@@ -97,4 +97,8 @@ func (p *Parser) eof() bool {
 
 func (p *Parser) emitError(msg string) {
 	p.errors = append(p.errors, compiler.Error{Message: msg, Location: p.peek().Location})
+}
+
+func (p *Parser) emitExpectedError(expectedWhat string) {
+	p.emitError(fmt.Sprintf("Expected %s, found '%s'", expectedWhat, p.peek().Lexeme))	
 }

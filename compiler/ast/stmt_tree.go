@@ -14,13 +14,25 @@
 
 package ast
 
+import "github.com/RohitAwate/commaql/compiler"
+
 type SelectStmt struct {
-	Columns       []string
-	Tables        []string
+	Columns       []SelectColumnNode
+	Tables        []TableNode
 	WhereClause   Expr
 	Limit         Expr
 	GroupByClause GroupByClause
 	OrderByClause OrderByClause
+}
+
+type SelectColumnNode struct {
+	ColumnToken compiler.Token
+	AliasToken  compiler.Token
+}
+
+type TableNode struct {
+	TableToken compiler.Token
+	AliasToken compiler.Token
 }
 
 func (ss SelectStmt) amNode() {}
