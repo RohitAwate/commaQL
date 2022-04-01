@@ -129,13 +129,18 @@ func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {
 }
 
 var binaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
-	tokenizer.PLUS:     vm.OpAdd,
-	tokenizer.MINUS:    vm.OpSubtract,
-	tokenizer.STAR:     vm.OpMultiply,
-	tokenizer.DIVIDE:   vm.OpDivide,
-	tokenizer.MODULO:   vm.OpModulo,
-	tokenizer.EXPONENT: vm.OpExponent,
-	// TODO: Implement for comparisons
+	tokenizer.PLUS:           vm.OpAdd,
+	tokenizer.MINUS:          vm.OpSubtract,
+	tokenizer.STAR:           vm.OpMultiply,
+	tokenizer.DIVIDE:         vm.OpDivide,
+	tokenizer.MODULO:         vm.OpModulo,
+	tokenizer.EXPONENT:       vm.OpExponent,
+	tokenizer.GREATER_THAN:   vm.OpGreaterThan,
+	tokenizer.GREATER_EQUALS: vm.OpGreaterEquals,
+	tokenizer.LESS_THAN:      vm.OpLessThan,
+	tokenizer.LESS_EQUALS:    vm.OpLessEquals,
+	tokenizer.EQUALS:         vm.OpEquals,
+	tokenizer.NOT_EQUALS:     vm.OpNotEquals,
 }
 
 func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {
