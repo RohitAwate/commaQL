@@ -59,11 +59,11 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 		loc := cg.Code.AddConstant(val)
 
 		// Load table name with LOAD_CONST
-		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	}
 
 	// SET_CTX
-	cg.Code.Emit(vm.OP_SET_EXEC_CTX)
+	cg.Code.Emit(vm.OpSetExecCtx)
 
 	if ss.WhereClause != nil {
 		cg.visitWhereClause(&ss.WhereClause)
@@ -83,7 +83,7 @@ func (cg *CodeGenerator) visitGroupByClause(gbc *ast.GroupByClause) {
 }
 
 func (cg *CodeGenerator) visitExpr(expr *ast.Expr) {
-	switch e := interface{}(expr).(type) {
+	switch e := interface{}(*expr).(type) {
 	case ast.UnaryExpr:
 		cg.visitUnaryExpr(&e)
 	case ast.BinaryExpr:
@@ -101,17 +101,19 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 		// TODO: Write a helper for this
 		val := types.NewNumber(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.TRUE:
 		fallthrough
 	case tokenizer.FALSE:
 		val := types.NewBoolean(lit.Meta.Type)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.STRING:
 		val := types.NewString(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+	default:
+		// FIXME
 	}
 }
 
@@ -120,7 +122,23 @@ func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {
 }
 
 func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {
+	cg.visitExpr(&be.RightOperand)
+	cg.visitExpr(&be.LeftOperand)
 
+	switch be.Operator.Type {
+	case tokenizer.PLUS:
+		cg.Code.Emit(vm.OpAdd)
+	case tokenizer.MINUS:
+		cg.Code.Emit(vm.OpSubtract)
+	case tokenizer.STAR:
+		cg.Code.Emit(vm.OpMultiply)
+	case tokenizer.DIVIDE:
+		cg.Code.Emit(vm.OpDivide)
+	case tokenizer.MODULO:
+		cg.Code.Emit(vm.OpModulo)
+	case tokenizer.EXPONENT:
+		cg.Code.Emit(vm.OpExponent)
+	}
 }
 
 func (cg *CodeGenerator) visitGroupedExpr(ge *ast.GroupedExpr) {

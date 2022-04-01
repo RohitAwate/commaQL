@@ -40,6 +40,7 @@ func main() {
 				payment_date
 			FROM
 				customer
+			WHERE amount > 100
 			ORDER BY payment_date, amount;`
 
 	tokenizer := tokenizer.Tokenizer{Query: query}
