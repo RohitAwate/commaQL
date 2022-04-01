@@ -15,16 +15,63 @@
 package codegen
 
 import (
+	"fmt"
 	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/compiler/ast"
+	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"github.com/RohitAwate/commaql/vm"
+	"github.com/RohitAwate/commaql/vm/types"
 )
 
 type CodeGenerator struct {
-	Bytecode compiler.Bytecode
+	statements []ast.Stmt
+	Code       vm.Bytecode
+	Errors     []compiler.Error
+}
+
+func NewCodeGenerator(statements []ast.Stmt) (*CodeGenerator, error) {
+	if statements == nil {
+		return nil, fmt.Errorf("root of AST cannot be nil")
+	}
+
+	return &CodeGenerator{
+		statements: statements,
+		Code:       vm.NewBytecode(),
+	}, nil
+}
+
+func (cg *CodeGenerator) Run() compiler.PhaseStatus {
+	for _, statement := range cg.statements {
+		switch statement.(type) {
+		case ast.SelectStmt:
+			selectStmt := statement.(ast.SelectStmt)
+			cg.visitSelectStmt(&selectStmt)
+		}
+	}
+
+	return compiler.PHASE_OK
 }
 
 func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
+	for _, tableNode := range ss.Tables {
+		// Add table name to constants pool
+		val := types.String{Meta: tableNode.TableToken.Lexeme}
+		loc := cg.Code.AddConstant(val)
 
+		// Load table name with LOAD_CONST
+		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+	}
+
+	// SET_CTX
+	cg.Code.Emit(vm.OP_SET_EXEC_CTX)
+
+	if ss.WhereClause != nil {
+		cg.visitWhereClause(&ss.WhereClause)
+	}
+}
+
+func (cg *CodeGenerator) visitWhereClause(expr *ast.Expr) {
+	cg.visitExpr(expr)
 }
 
 func (cg *CodeGenerator) visitOrderByClause(obc *ast.OrderByClause) {
@@ -35,8 +82,37 @@ func (cg *CodeGenerator) visitGroupByClause(gbc *ast.GroupByClause) {
 
 }
 
-func (cg *CodeGenerator) visitLiteral(l *ast.Literal) {
+func (cg *CodeGenerator) visitExpr(expr *ast.Expr) {
+	switch e := interface{}(expr).(type) {
+	case ast.UnaryExpr:
+		cg.visitUnaryExpr(&e)
+	case ast.BinaryExpr:
+		cg.visitBinaryExpr(&e)
+	case ast.GroupedExpr:
+		cg.visitGroupedExpr(&e)
+	case ast.Literal:
+		cg.visitLiteral(&e)
+	}
+}
 
+func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
+	switch lit.Meta.Type {
+	case tokenizer.NUMBER:
+		// TODO: Write a helper for this
+		val := types.NewNumber(lit.Meta.Lexeme)
+		loc := cg.Code.AddConstant(val)
+		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+	case tokenizer.TRUE:
+		fallthrough
+	case tokenizer.FALSE:
+		val := types.NewBoolean(lit.Meta.Type)
+		loc := cg.Code.AddConstant(val)
+		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+	case tokenizer.STRING:
+		val := types.NewString(lit.Meta.Lexeme)
+		loc := cg.Code.AddConstant(val)
+		cg.Code.EmitWithArg(vm.OP_LOAD_CONST, loc)
+	}
 }
 
 func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {

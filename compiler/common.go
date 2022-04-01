@@ -31,3 +31,10 @@ type Error struct {
 	Message  string
 	Location Location
 }
+
+type PhaseStatus uint
+
+const (
+	PHASE_OK PhaseStatus = iota + 1000
+	PHASE_ERROR
+)

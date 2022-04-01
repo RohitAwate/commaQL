@@ -12,25 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package compiler
+package vm
 
 import "github.com/RohitAwate/commaql/vm/types"
 
+type OpCode uint
+
 const (
-	OP_ADD = iota + 6969
+	OP_ADD OpCode = iota + 6969
 	OP_SUBTRACT
 	OP_MULTIPLY
 	OP_DIVIDE
 	OP_EXPONENT
+	OP_LOAD_TABLE
+	OP_JOIN
+	OP_LOAD_CONST
+	OP_SET_EXEC_CTX
 )
-
-type OpCode uint
 
 type Bytecode struct {
 	Blob          []OpCode
 	ConstantsPool []types.Value
 }
 
-func (b *Bytecode) AddConstant(v types.Value) {
+func NewBytecode() Bytecode {
+	return Bytecode{
+		Blob:          []OpCode{},
+		ConstantsPool: []types.Value{},
+	}
+}
 
+func (b *Bytecode) AddConstant(v types.Value) uint {
+	b.ConstantsPool = append(b.ConstantsPool, v)
+	return uint(len(b.ConstantsPool) - 1)
+}
+
+func (b *Bytecode) Emit(oc OpCode) uint {
+	b.Blob = append(b.Blob, oc)
+	return uint(len(b.Blob))
+}
+
+func (b *Bytecode) EmitWithArg(oc OpCode, arg uint) uint {
+	b.Blob = append(b.Blob, oc, OpCode(arg))
+	return uint(len(b.Blob) - 2)
 }

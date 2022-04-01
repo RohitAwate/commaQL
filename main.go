@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/RohitAwate/commaql/compiler/codegen"
 	"github.com/RohitAwate/commaql/compiler/parser"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/table"
@@ -64,4 +65,10 @@ func main() {
 	file, _ := os.Open("superhero.csv")
 	superhero, _ := table.GetTableFromCSV(file)
 	fmt.Println(superhero)
+
+	fmt.Println("\n\n\n\n\n")
+	cg, _ := codegen.NewCodeGenerator(statements)
+	cg.Run()
+
+	fmt.Println(cg.Code)
 }

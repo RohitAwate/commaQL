@@ -20,9 +20,9 @@ import (
 	"github.com/RohitAwate/commaql/compiler"
 )
 
+// TODO: Maybe move this to compiler/common.go
 const (
-	// SQL Keywords
-	AND = iota
+	AND compiler.TokenType = iota // SQL Keywords
 	ALL
 	AS
 	ASC

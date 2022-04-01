@@ -14,6 +14,12 @@
 
 package types
 
+import (
+	"github.com/RohitAwate/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"strconv"
+)
+
 type Value interface {
 	amValue()
 }
@@ -22,4 +28,29 @@ type Number struct {
 	Meta float64
 }
 
-func (n *Number) amValue() {}
+func (n Number) amValue() {}
+
+func NewNumber(lexeme string) *Number {
+	number, _ := strconv.ParseFloat(lexeme, 64)
+	return &Number{Meta: number}
+}
+
+type String struct {
+	Meta string
+}
+
+func (n String) amValue() {}
+
+func NewString(lexeme string) *String {
+	return &String{Meta: lexeme}
+}
+
+type Boolean struct {
+	Meta bool
+}
+
+func (b Boolean) amValue() {}
+
+func NewBoolean(tokenType compiler.TokenType) *Boolean {
+	return &Boolean{Meta: tokenType == tokenizer.TRUE}
+}
