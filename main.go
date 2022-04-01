@@ -40,11 +40,11 @@ func main() {
 				payment_date
 			FROM
 				customer
-			WHERE amount > 100
+			WHERE amount = 100 - 2
 			ORDER BY payment_date, amount;`
 
-	tokenizer := tokenizer.Tokenizer{Query: query}
-	tokens, errors := tokenizer.Run()
+	t := tokenizer.Tokenizer{Query: query}
+	tokens, errors := t.Run()
 
 	for _, token := range tokens {
 		fmt.Println(token)
@@ -54,8 +54,8 @@ func main() {
 		fmt.Println(err)
 	}
 
-	parser := parser.Parser{Tokens: tokens}
-	statements, errors := parser.Run()
+	p := parser.Parser{Tokens: tokens}
+	statements, errors := p.Run()
 
 	prettyPrint(statements)
 

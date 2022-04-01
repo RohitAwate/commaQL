@@ -16,6 +16,7 @@ package codegen
 
 import (
 	"fmt"
+
 	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
@@ -42,10 +43,9 @@ func NewCodeGenerator(statements []ast.Stmt) (*CodeGenerator, error) {
 
 func (cg *CodeGenerator) Run() compiler.PhaseStatus {
 	for _, statement := range cg.statements {
-		switch statement.(type) {
+		switch stmt := statement.(type) {
 		case ast.SelectStmt:
-			selectStmt := statement.(ast.SelectStmt)
-			cg.visitSelectStmt(&selectStmt)
+			cg.visitSelectStmt(&stmt)
 		}
 	}
 
@@ -59,7 +59,7 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 		loc := cg.Code.AddConstant(val)
 
 		// Load table name with LOAD_CONST
-		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+		cg.Code.EmitWithArg(vm.OpLoadTable, loc)
 	}
 
 	// SET_CTX
@@ -83,7 +83,7 @@ func (cg *CodeGenerator) visitGroupByClause(gbc *ast.GroupByClause) {
 }
 
 func (cg *CodeGenerator) visitExpr(expr *ast.Expr) {
-	switch e := interface{}(*expr).(type) {
+	switch e := (*expr).(type) {
 	case ast.UnaryExpr:
 		cg.visitUnaryExpr(&e)
 	case ast.BinaryExpr:
@@ -117,30 +117,31 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 	}
 }
 
-func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {
+var unaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
+	tokenizer.MINUS: vm.OpNegate,
+	tokenizer.NOT:   vm.OpNot,
+}
 
+func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {
+	cg.visitExpr(&ue.Operand)
+	cg.Code.Emit(unaryOperatorToOpCode[ue.Operator.Type])
+}
+
+var binaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
+	tokenizer.PLUS:     vm.OpAdd,
+	tokenizer.MINUS:    vm.OpSubtract,
+	tokenizer.STAR:     vm.OpMultiply,
+	tokenizer.DIVIDE:   vm.OpDivide,
+	tokenizer.MODULO:   vm.OpModulo,
+	tokenizer.EXPONENT: vm.OpExponent,
 }
 
 func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {
 	cg.visitExpr(&be.RightOperand)
 	cg.visitExpr(&be.LeftOperand)
-
-	switch be.Operator.Type {
-	case tokenizer.PLUS:
-		cg.Code.Emit(vm.OpAdd)
-	case tokenizer.MINUS:
-		cg.Code.Emit(vm.OpSubtract)
-	case tokenizer.STAR:
-		cg.Code.Emit(vm.OpMultiply)
-	case tokenizer.DIVIDE:
-		cg.Code.Emit(vm.OpDivide)
-	case tokenizer.MODULO:
-		cg.Code.Emit(vm.OpModulo)
-	case tokenizer.EXPONENT:
-		cg.Code.Emit(vm.OpExponent)
-	}
+	cg.Code.Emit(binaryOperatorToOpCode[be.Operator.Type])
 }
 
 func (cg *CodeGenerator) visitGroupedExpr(ge *ast.GroupedExpr) {
-
+	cg.visitExpr(&ge.InnerExpr)
 }

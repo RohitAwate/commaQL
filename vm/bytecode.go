@@ -25,6 +25,8 @@ const (
 	OpDivide
 	OpModulo
 	OpExponent
+	OpNegate
+	OpNot
 	OpLoadTable
 	OpJoin
 	OpLoadConst

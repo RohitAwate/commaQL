@@ -34,7 +34,7 @@ type Tokenizer struct {
 func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
 	t.Reset()
 
-	var tokens []compiler.Token = make([]compiler.Token, 0)
+	tokens := make([]compiler.Token, 0)
 
 	for !t.eof() {
 		t.skipWhitespace()
