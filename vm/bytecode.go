@@ -19,15 +19,16 @@ import "github.com/RohitAwate/commaql/vm/types"
 type OpCode uint
 
 const (
-	OP_ADD OpCode = iota + 6969
-	OP_SUBTRACT
-	OP_MULTIPLY
-	OP_DIVIDE
-	OP_EXPONENT
-	OP_LOAD_TABLE
-	OP_JOIN
-	OP_LOAD_CONST
-	OP_SET_EXEC_CTX
+	OpAdd OpCode = iota + 6969
+	OpSubtract
+	OpMultiply
+	OpDivide
+	OpModulo
+	OpExponent
+	OpLoadTable
+	OpJoin
+	OpLoadConst
+	OpSetExecCtx
 )
 
 type Bytecode struct {
