@@ -33,6 +33,30 @@ const (
 	OpSetExecCtx
 )
 
+type OpCodeInfo struct {
+	PrintableName string
+	Args          uint8
+}
+
+var opCodeInfoMap = map[OpCode]OpCodeInfo{
+	OpAdd:        {"OpAdd", 0},
+	OpSubtract:   {"OpSubtract", 0},
+	OpMultiply:   {"OpMultiply", 0},
+	OpDivide:     {"OpDivide", 0},
+	OpModulo:     {"OpModulo", 0},
+	OpExponent:   {"OpExponent", 0},
+	OpNegate:     {"OpNegate", 0},
+	OpNot:        {"OpNot", 0},
+	OpLoadTable:  {"OpLoadTable", 0},
+	OpJoin:       {"OpJoin", 0},
+	OpLoadConst:  {"OpLoadConst", 1},
+	OpSetExecCtx: {"OpSetExecCtx", 0},
+}
+
+func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
+	return opCodeInfoMap[opCode]
+}
+
 type Bytecode struct {
 	Blob          []OpCode
 	ConstantsPool []types.Value

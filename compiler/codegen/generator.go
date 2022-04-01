@@ -59,7 +59,8 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 		loc := cg.Code.AddConstant(val)
 
 		// Load table name with LOAD_CONST
-		cg.Code.EmitWithArg(vm.OpLoadTable, loc)
+		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+		cg.Code.Emit(vm.OpLoadTable)
 	}
 
 	// SET_CTX
@@ -134,6 +135,7 @@ var binaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
 	tokenizer.DIVIDE:   vm.OpDivide,
 	tokenizer.MODULO:   vm.OpModulo,
 	tokenizer.EXPONENT: vm.OpExponent,
+	// TODO: Implement for comparisons
 }
 
 func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {

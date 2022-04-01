@@ -17,6 +17,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/RohitAwate/commaql/disassembler"
 	"os"
 
 	"github.com/RohitAwate/commaql/compiler/codegen"
@@ -71,5 +72,5 @@ func main() {
 	cg, _ := codegen.NewCodeGenerator(statements)
 	cg.Run()
 
-	fmt.Println(cg.Code)
+	disassembler.Disassemble(&cg.Code)
 }

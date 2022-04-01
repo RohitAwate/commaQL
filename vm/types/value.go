@@ -15,6 +15,7 @@
 package types
 
 import (
+	"fmt"
 	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"strconv"
@@ -29,6 +30,9 @@ type Number struct {
 }
 
 func (n Number) amValue() {}
+func (n Number) String() string {
+	return fmt.Sprintf("%f", n.Meta)
+}
 
 func NewNumber(lexeme string) *Number {
 	number, _ := strconv.ParseFloat(lexeme, 64)
@@ -39,7 +43,10 @@ type String struct {
 	Meta string
 }
 
-func (n String) amValue() {}
+func (s String) amValue() {}
+func (s String) String() string {
+	return fmt.Sprintf("\"%s\"", s.Meta)
+}
 
 func NewString(lexeme string) *String {
 	return &String{Meta: lexeme}
@@ -50,6 +57,9 @@ type Boolean struct {
 }
 
 func (b Boolean) amValue() {}
+func (b Boolean) String() string {
+	return fmt.Sprintf("%t", b.Meta)
+}
 
 func NewBoolean(tokenType compiler.TokenType) *Boolean {
 	return &Boolean{Meta: tokenType == tokenizer.TRUE}
