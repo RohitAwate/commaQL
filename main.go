@@ -17,13 +17,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/RohitAwate/commaql/disassembler"
-	"os"
-
 	"github.com/RohitAwate/commaql/compiler/codegen"
 	"github.com/RohitAwate/commaql/compiler/parser"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
-	"github.com/RohitAwate/commaql/table"
+	"github.com/RohitAwate/commaql/disassembler"
 )
 
 func prettyPrint(i interface{}) {
@@ -45,30 +42,11 @@ func main() {
 			ORDER BY payment_date, amount;`
 
 	t := tokenizer.Tokenizer{Query: query}
-	tokens, errors := t.Run()
-
-	for _, token := range tokens {
-		fmt.Println(token)
-	}
-
-	for _, err := range errors {
-		fmt.Println(err)
-	}
+	tokens, _ := t.Run()
 
 	p := parser.Parser{Tokens: tokens}
-	statements, errors := p.Run()
+	statements, _ := p.Run()
 
-	prettyPrint(statements)
-
-	for _, err := range errors {
-		fmt.Println(err)
-	}
-
-	file, _ := os.Open("superhero.csv")
-	superhero, _ := table.GetTableFromCSV(file)
-	fmt.Println(superhero)
-
-	fmt.Println("\n\n\n\n\n")
 	cg, _ := codegen.NewCodeGenerator(statements)
 	cg.Run()
 
