@@ -75,3 +75,32 @@ func containsEmails(row []string) bool {
 
 	return false
 }
+
+type SQLTypeHint uint
+
+const baseSQLTypeHint SQLTypeHint = 8457345
+const (
+	SqlInt = iota + baseSQLTypeHint
+	SqlFloat
+	SqlBool
+	SqlString
+)
+
+func deduceTypeForColumn(sample string) SQLTypeHint {
+	_, err := strconv.Atoi(sample)
+	if err == nil {
+		return SqlInt
+	}
+
+	_, err = strconv.ParseFloat(sample, 64)
+	if err == nil {
+		return SqlFloat
+	}
+
+	_, err = strconv.ParseBool(sample)
+	if err == nil {
+		return SqlBool
+	}
+
+	return SqlString
+}

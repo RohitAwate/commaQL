@@ -14,14 +14,20 @@
 
 package table
 
-type Column struct {
-	Name string
-	Type SQLType
+type SQLType interface {
+	int64 | float64 | string | bool
 }
 
-type Table struct {
-	Name    string
-	Columns []Column
+type Column[T SQLType] struct {
+	Name string
+	Data Storage
 
-	ContainsHeader bool
+	// This is useful when parsing the input source
+	typeHint SQLTypeHint
+}
+
+type Table interface {
+	Name() string
+	Columns() []Column
+	LoadData()
 }

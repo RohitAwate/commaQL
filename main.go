@@ -15,21 +15,13 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/RohitAwate/commaql/compiler/codegen"
 	"github.com/RohitAwate/commaql/compiler/parser"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/disassembler"
 )
 
-func prettyPrint(i interface{}) {
-	s, _ := json.MarshalIndent(i, "", " ")
-	fmt.Println(string(s))
-}
-
 func main() {
-	// query := "select net, gross FROM prices where name = 'rohit' and \"type = 'card' limit 10*2 "
 	query := `SELECT
 				customer_id,
 				first_name,
