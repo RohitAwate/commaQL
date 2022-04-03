@@ -12,29 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ast
+package vm
 
-import (
-	"github.com/RohitAwate/commaql/compiler/common"
-)
+type VM struct {
+	ctx ExecutionContext
 
-type ColumnForOrderByClause struct {
-	ColumnToken common.Token
-	OrderToken  common.Token
-	Name        string
-	Ascending   bool
+	ip uint
 }
 
-type OrderByClause struct {
-	Columns []ColumnForOrderByClause
+func (vm *VM) Run(code Bytecode) {
+
 }
-
-type GroupByClause struct {
-	Columns []common.Token
-}
-
-func (obc OrderByClause) amNode() {}
-func (gbc GroupByClause) amNode() {}
-
-func (obc OrderByClause) amClause() {}
-func (gbc GroupByClause) amClause() {}

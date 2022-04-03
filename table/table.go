@@ -15,19 +15,16 @@
 package table
 
 type SQLType interface {
-	int64 | float64 | string | bool
+	int | float64 | string | bool
 }
 
 type Column[T SQLType] struct {
 	Name string
-	Data Storage
-
-	// This is useful when parsing the input source
-	typeHint SQLTypeHint
+	Data Storage[T]
 }
 
-type Table interface {
+type Table[T SQLType] interface {
 	Name() string
-	Columns() []Column
+	Columns() []Column[T]
 	LoadData()
 }

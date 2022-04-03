@@ -16,8 +16,8 @@ package codegen
 
 import (
 	"fmt"
+	"github.com/RohitAwate/commaql/compiler/common"
 
-	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/vm"
@@ -26,7 +26,7 @@ import (
 type CodeGenerator struct {
 	statements []ast.Stmt
 	Code       vm.Bytecode
-	Errors     []compiler.Error
+	Errors     []common.Error
 }
 
 func NewCodeGenerator(statements []ast.Stmt) (*CodeGenerator, error) {
@@ -40,7 +40,7 @@ func NewCodeGenerator(statements []ast.Stmt) (*CodeGenerator, error) {
 	}, nil
 }
 
-func (cg *CodeGenerator) Run() compiler.PhaseStatus {
+func (cg *CodeGenerator) Run() common.PhaseStatus {
 	for _, statement := range cg.statements {
 		switch stmt := statement.(type) {
 		case ast.SelectStmt:
@@ -48,7 +48,7 @@ func (cg *CodeGenerator) Run() compiler.PhaseStatus {
 		}
 	}
 
-	return compiler.PHASE_OK
+	return common.PHASE_OK
 }
 
 func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
@@ -114,7 +114,7 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 	}
 }
 
-var unaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
+var unaryOperatorToOpCode = map[common.TokenType]vm.OpCode{
 	tokenizer.MINUS: vm.OpNegate,
 	tokenizer.NOT:   vm.OpNot,
 }
@@ -124,7 +124,7 @@ func (cg *CodeGenerator) visitUnaryExpr(ue *ast.UnaryExpr) {
 	cg.Code.Emit(unaryOperatorToOpCode[ue.Operator.Type])
 }
 
-var binaryOperatorToOpCode = map[compiler.TokenType]vm.OpCode{
+var binaryOperatorToOpCode = map[common.TokenType]vm.OpCode{
 	tokenizer.PLUS:           vm.OpAdd,
 	tokenizer.MINUS:          vm.OpSubtract,
 	tokenizer.STAR:           vm.OpMultiply,

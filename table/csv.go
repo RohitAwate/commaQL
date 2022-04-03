@@ -6,14 +6,17 @@ import (
 	"strings"
 )
 
-type CSVTable struct {
+type CSVTable[T SQLType] struct {
 	name    string
-	columns []Column
+	columns []Column[T]
 	reader  *csv.Reader
 }
 
-func NewCSVTable(file *os.File) (Table, error) {
-	table := CSVTable{reader: csv.NewReader(file), name: file.Name()}
+func NewCSVTable[T SQLType](file *os.File) (*CSVTable[T], error) {
+	table := CSVTable[T]{
+		reader: csv.NewReader(file), name: file.Name(),
+		columns: []Column[T]{},
+	}
 
 	// Scan the first row of the CSVs.
 	// It may or may not be the header row.
@@ -48,22 +51,27 @@ func NewCSVTable(file *os.File) (Table, error) {
 			columnName = getColumnAlias(uint(index))
 		}
 
-		newColumn := Column{
-			Name:     columnName,
-			typeHint: deduceTypeForColumn(dataValue),
+		switch deduceTypeForColumn(dataValue) {
+		case SqlInt:
+			newColumn := Column[int]{Name: columnName}
+			table.columns = append(table.columns, newColumn)
+		case SqlFloat:
+			newColumn := Column[float64]{Name: columnName}
+		case SqlBool:
+			newColumn := Column[bool]{Name: columnName}
+		default:
+			newColumn := Column[string]{Name: columnName}
 		}
-
-		table.columns = append(table.columns, newColumn)
 	}
 
-	return table, nil
+	return &table, nil
 }
 
 func (ct CSVTable) Name() string {
 	return ct.name
 }
 
-func (ct CSVTable) Columns() []Column {
+func (ct CSVTable) Columns() []Column[T] {
 	return ct.columns
 }
 

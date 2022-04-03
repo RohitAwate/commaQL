@@ -14,12 +14,7 @@
 
 package main
 
-import (
-	"github.com/RohitAwate/commaql/compiler/codegen"
-	"github.com/RohitAwate/commaql/compiler/parser"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
-	"github.com/RohitAwate/commaql/disassembler"
-)
+import "github.com/RohitAwate/commaql/compiler"
 
 func main() {
 	query := `SELECT
@@ -33,14 +28,6 @@ func main() {
 			WHERE amount = 100 - 2
 			ORDER BY payment_date, amount;`
 
-	t := tokenizer.Tokenizer{Query: query}
-	tokens, _ := t.Run()
-
-	p := parser.Parser{Tokens: tokens}
-	statements, _ := p.Run()
-
-	cg, _ := codegen.NewCodeGenerator(statements)
-	cg.Run()
-
-	disassembler.Disassemble(&cg.Code)
+	c, _ := compiler.NewCompiler("superhero.csv")
+	c.Compile(query)
 }

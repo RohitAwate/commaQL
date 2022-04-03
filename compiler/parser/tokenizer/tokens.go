@@ -15,14 +15,13 @@
 package tokenizer
 
 import (
+	"github.com/RohitAwate/commaql/compiler/common"
 	"strings"
-
-	"github.com/RohitAwate/commaql/compiler"
 )
 
 // TODO: Maybe move this to compiler/common.go
 const (
-	AND compiler.TokenType = iota // SQL Keywords
+	AND common.TokenType = iota // SQL Keywords
 	ALL
 	AS
 	ASC
@@ -79,7 +78,7 @@ const (
 	NUMBER
 )
 
-var SQLKeywordsToTokenType = map[string]compiler.TokenType{
+var SQLKeywordsToTokenType = map[string]common.TokenType{
 	"AND":      AND,
 	"ALL":      ALL,
 	"AS":       AS,

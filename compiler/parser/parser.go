@@ -16,20 +16,20 @@ package parser
 
 import (
 	"fmt"
+	"github.com/RohitAwate/commaql/compiler/common"
 
-	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 )
 
 type Parser struct {
-	Tokens []compiler.Token
+	Tokens []common.Token
 
 	current uint
-	errors  []compiler.Error
+	errors  []common.Error
 }
 
-func (p *Parser) Run() ([]ast.Stmt, []compiler.Error) {
+func (p *Parser) Run() ([]ast.Stmt, []common.Error) {
 	var statements []ast.Stmt
 
 	for !p.eof() {
@@ -60,7 +60,7 @@ func (p *Parser) statement() ast.Node {
 	return nil
 }
 
-func (p *Parser) peek() compiler.Token {
+func (p *Parser) peek() common.Token {
 	if p.current < uint(len(p.Tokens)) {
 		return p.Tokens[p.current]
 	}
@@ -68,7 +68,7 @@ func (p *Parser) peek() compiler.Token {
 	return p.Tokens[len(p.Tokens)-1]
 }
 
-func (p *Parser) previous() compiler.Token {
+func (p *Parser) previous() common.Token {
 	return p.Tokens[p.current-1]
 }
 
@@ -78,7 +78,7 @@ func (p *Parser) advance() {
 	}
 }
 
-func (p *Parser) match(tokenType compiler.TokenType) bool {
+func (p *Parser) match(tokenType common.TokenType) bool {
 	if p.peek().Type == tokenType {
 		p.advance()
 		return true
@@ -96,9 +96,9 @@ func (p *Parser) eof() bool {
 }
 
 func (p *Parser) emitError(msg string) {
-	p.errors = append(p.errors, compiler.Error{Message: msg, Location: p.peek().Location})
+	p.errors = append(p.errors, common.Error{Message: msg, Location: p.peek().Location})
 }
 
 func (p *Parser) emitExpectedError(expectedWhat string) {
-	p.emitError(fmt.Sprintf("Expected %s, found '%s'", expectedWhat, p.peek().Lexeme))	
+	p.emitError(fmt.Sprintf("Expected %s, found '%s'", expectedWhat, p.peek().Lexeme))
 }

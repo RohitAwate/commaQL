@@ -12,29 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ast
+package vm
 
-import (
-	"github.com/RohitAwate/commaql/compiler/common"
-)
+import "github.com/RohitAwate/commaql/table"
 
-type ColumnForOrderByClause struct {
-	ColumnToken common.Token
-	OrderToken  common.Token
-	Name        string
-	Ascending   bool
+type ExecutionContext struct {
+	t1, t2 *table.Table
 }
-
-type OrderByClause struct {
-	Columns []ColumnForOrderByClause
-}
-
-type GroupByClause struct {
-	Columns []common.Token
-}
-
-func (obc OrderByClause) amNode() {}
-func (gbc GroupByClause) amNode() {}
-
-func (obc OrderByClause) amClause() {}
-func (gbc GroupByClause) amClause() {}

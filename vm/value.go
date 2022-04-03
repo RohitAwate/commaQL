@@ -16,7 +16,7 @@ package vm
 
 import (
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler"
+	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"strconv"
 )
@@ -61,6 +61,6 @@ func (b Boolean) String() string {
 	return fmt.Sprintf("%t", b.Meta)
 }
 
-func NewBoolean(tokenType compiler.TokenType) *Boolean {
+func NewBoolean(tokenType common.TokenType) *Boolean {
 	return &Boolean{Meta: tokenType == tokenizer.TRUE}
 }

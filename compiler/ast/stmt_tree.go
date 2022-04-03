@@ -14,7 +14,9 @@
 
 package ast
 
-import "github.com/RohitAwate/commaql/compiler"
+import (
+	"github.com/RohitAwate/commaql/compiler/common"
+)
 
 type SelectStmt struct {
 	Columns       []SelectColumnNode
@@ -26,13 +28,13 @@ type SelectStmt struct {
 }
 
 type SelectColumnNode struct {
-	ColumnToken compiler.Token
-	AliasToken  compiler.Token
+	ColumnToken common.Token
+	AliasToken  common.Token
 }
 
 type TableNode struct {
-	TableToken compiler.Token
-	AliasToken compiler.Token
+	TableToken common.Token
+	AliasToken common.Token
 }
 
 func (ss SelectStmt) amNode() {}

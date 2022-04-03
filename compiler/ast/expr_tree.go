@@ -14,20 +14,22 @@
 
 package ast
 
-import "github.com/RohitAwate/commaql/compiler"
+import (
+	"github.com/RohitAwate/commaql/compiler/common"
+)
 
 type Literal struct {
-	Meta compiler.Token
+	Meta common.Token
 }
 
 type UnaryExpr struct {
-	Operator compiler.Token
+	Operator common.Token
 	Operand  Expr
 }
 
 type BinaryExpr struct {
 	LeftOperand  Expr
-	Operator     compiler.Token
+	Operator     common.Token
 	RightOperand Expr
 }
 

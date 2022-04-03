@@ -16,9 +16,8 @@ package tokenizer
 
 import (
 	"fmt"
+	"github.com/RohitAwate/commaql/compiler/common"
 	"strings"
-
-	"github.com/RohitAwate/commaql/compiler"
 )
 
 type Tokenizer struct {
@@ -28,13 +27,13 @@ type Tokenizer struct {
 	anchor    uint
 	lookahead uint
 
-	errors []compiler.Error
+	errors []common.Error
 }
 
-func (t *Tokenizer) Run() ([]compiler.Token, []compiler.Error) {
+func (t *Tokenizer) Run() ([]common.Token, []common.Error) {
 	t.Reset()
 
-	tokens := make([]compiler.Token, 0)
+	tokens := make([]common.Token, 0)
 
 	for !t.eof() {
 		t.skipWhitespace()
@@ -117,7 +116,7 @@ func (t *Tokenizer) Reset() {
 }
 
 func (t *Tokenizer) emitError(msg string) {
-	t.errors = append(t.errors, compiler.Error{Message: msg, Location: t.getLocationForWindow()})
+	t.errors = append(t.errors, common.Error{Message: msg, Location: t.getLocationForWindow()})
 }
 
 func (t *Tokenizer) eof() bool {
@@ -165,14 +164,14 @@ func (t *Tokenizer) getLexemeForWindow() string {
 	return t.Query[t.anchor:t.lookahead]
 }
 
-func (t *Tokenizer) getLocationForWindow() compiler.Location {
+func (t *Tokenizer) getLocationForWindow() common.Location {
 	// TODO: Track line and columns
-	return compiler.Location{Line: 0, Column: 0}
+	return common.Location{Line: 0, Column: 0}
 }
 
-func (t *Tokenizer) emitToken() compiler.Token {
+func (t *Tokenizer) emitToken() common.Token {
 	defer t.advanceWindow()
-	return compiler.Token{Lexeme: t.getLexemeForWindow(), Location: t.getLocationForWindow()}
+	return common.Token{Lexeme: t.getLexemeForWindow(), Location: t.getLocationForWindow()}
 }
 
 func (t *Tokenizer) skipWhitespace() {
@@ -191,7 +190,7 @@ func (t *Tokenizer) skipWhitespace() {
 	}
 }
 
-func (t *Tokenizer) number() compiler.Token {
+func (t *Tokenizer) number() common.Token {
 	// TODO: Handle floats
 	for isDigit(t.peek()) {
 		t.advance()
@@ -203,7 +202,7 @@ func (t *Tokenizer) number() compiler.Token {
 	return token
 }
 
-func (t *Tokenizer) identifier() compiler.Token {
+func (t *Tokenizer) identifier() common.Token {
 	for t.peek() == '_' || isAlpha(t.peek()) {
 		t.advance()
 	}
@@ -219,7 +218,7 @@ func (t *Tokenizer) identifier() compiler.Token {
 	return token
 }
 
-func (t *Tokenizer) stringLiteral() compiler.Token {
+func (t *Tokenizer) stringLiteral() common.Token {
 	startingQuote := t.peek()
 
 	// Consume opening quote
@@ -238,7 +237,7 @@ func (t *Tokenizer) stringLiteral() compiler.Token {
 	return stringToken
 }
 
-func (t *Tokenizer) emitSingleCharToken(tokenType compiler.TokenType) compiler.Token {
+func (t *Tokenizer) emitSingleCharToken(tokenType common.TokenType) common.Token {
 	// TODO: Try and get rid of this and use just the emitToken method with a new
 	// parameter that accept the token type. That would involve playing around with advance
 	// since that appears to be handle by respective logic just before calling emitToken.
