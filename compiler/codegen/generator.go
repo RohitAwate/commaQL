@@ -21,7 +21,6 @@ import (
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/vm"
-	"github.com/RohitAwate/commaql/vm/types"
 )
 
 type CodeGenerator struct {
@@ -54,16 +53,13 @@ func (cg *CodeGenerator) Run() compiler.PhaseStatus {
 
 func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	for _, tableNode := range ss.Tables {
-		// Add table name to constants pool
-		val := types.String{Meta: tableNode.TableToken.Lexeme}
+		val := vm.String{Meta: tableNode.TableToken.Lexeme}
 		loc := cg.Code.AddConstant(val)
 
-		// Load table name with LOAD_CONST
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 		cg.Code.Emit(vm.OpLoadTable)
 	}
 
-	// SET_CTX
 	cg.Code.Emit(vm.OpSetExecCtx)
 
 	if ss.WhereClause != nil {
@@ -99,18 +95,18 @@ func (cg *CodeGenerator) visitExpr(expr *ast.Expr) {
 func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 	switch lit.Meta.Type {
 	case tokenizer.NUMBER:
-		// TODO: Write a helper for this
-		val := types.NewNumber(lit.Meta.Lexeme)
+		// TODO: Write a helper for this, lots of duplication between these cases
+		val := vm.NewNumber(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.TRUE:
 		fallthrough
 	case tokenizer.FALSE:
-		val := types.NewBoolean(lit.Meta.Type)
+		val := vm.NewBoolean(lit.Meta.Type)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.STRING:
-		val := types.NewString(lit.Meta.Lexeme)
+		val := vm.NewString(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	default:
