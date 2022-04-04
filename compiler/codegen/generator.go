@@ -16,11 +16,11 @@ package codegen
 
 import (
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler/common"
-
 	"github.com/RohitAwate/commaql/compiler/ast"
+	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/vm"
+	"github.com/RohitAwate/commaql/vm/values"
 )
 
 type CodeGenerator struct {
@@ -53,7 +53,7 @@ func (cg *CodeGenerator) Run() common.PhaseStatus {
 
 func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	for _, tableNode := range ss.Tables {
-		val := vm.String{Meta: tableNode.TableToken.Lexeme}
+		val := values.String{Meta: tableNode.TableToken.Lexeme}
 		loc := cg.Code.AddConstant(val)
 
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
@@ -96,17 +96,17 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 	switch lit.Meta.Type {
 	case tokenizer.NUMBER:
 		// TODO: Write a helper for this, lots of duplication between these cases
-		val := vm.NewNumber(lit.Meta.Lexeme)
+		val := values.NewNumber(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.TRUE:
 		fallthrough
 	case tokenizer.FALSE:
-		val := vm.NewBoolean(lit.Meta.Type)
+		val := values.NewBoolean(lit.Meta.Type)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	case tokenizer.STRING:
-		val := vm.NewString(lit.Meta.Lexeme)
+		val := values.NewString(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
 	default:

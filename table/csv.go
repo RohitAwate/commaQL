@@ -2,20 +2,21 @@ package table
 
 import (
 	"encoding/csv"
+	"github.com/RohitAwate/commaql/vm/values"
 	"os"
 	"strings"
 )
 
-type CSVTable[T SQLType] struct {
+type CSVTable struct {
 	name    string
-	columns []Column[T]
+	columns []Column
 	reader  *csv.Reader
 }
 
-func NewCSVTable[T SQLType](file *os.File) (*CSVTable[T], error) {
-	table := CSVTable[T]{
+func NewCSVTable(file *os.File) (*CSVTable, error) {
+	table := CSVTable{
 		reader: csv.NewReader(file), name: file.Name(),
-		columns: []Column[T]{},
+		columns: []Column{},
 	}
 
 	// Scan the first row of the CSVs.
@@ -51,17 +52,8 @@ func NewCSVTable[T SQLType](file *os.File) (*CSVTable[T], error) {
 			columnName = getColumnAlias(uint(index))
 		}
 
-		switch deduceTypeForColumn(dataValue) {
-		case SqlInt:
-			newColumn := Column[int]{Name: columnName}
-			table.columns = append(table.columns, newColumn)
-		case SqlFloat:
-			newColumn := Column[float64]{Name: columnName}
-		case SqlBool:
-			newColumn := Column[bool]{Name: columnName}
-		default:
-			newColumn := Column[string]{Name: columnName}
-		}
+		newColumn := Column{Name: columnName, Type: deduceTypeForColumn(dataValue)}
+		table.columns = append(table.columns, newColumn)
 	}
 
 	return &table, nil
@@ -71,12 +63,16 @@ func (ct CSVTable) Name() string {
 	return ct.name
 }
 
-func (ct CSVTable) Columns() []Column[T] {
+func (ct CSVTable) Columns() []Column {
 	return ct.columns
 }
 
 func (ct CSVTable) LoadData() {
 	// TODO
+}
+
+func (ct CSVTable) NextRow() ([]values.Value, error) {
+	return make([]values.Value, 10), nil
 }
 
 func (ct CSVTable) nextRow() ([]string, error) {

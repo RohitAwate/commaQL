@@ -14,17 +14,16 @@
 
 package table
 
-type SQLType interface {
-	int | float64 | string | bool
-}
+import "github.com/RohitAwate/commaql/vm/values"
 
-type Column[T SQLType] struct {
+type Column struct {
 	Name string
-	Data Storage[T]
+	Type SQLTypeHint
 }
 
-type Table[T SQLType] interface {
+type Table interface {
 	Name() string
-	Columns() []Column[T]
+	Columns() []Column
 	LoadData()
+	NextRow() ([]values.Value, error)
 }

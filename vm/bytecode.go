@@ -14,6 +14,8 @@
 
 package vm
 
+import "github.com/RohitAwate/commaql/vm/values"
+
 type OpCode uint
 
 const (
@@ -69,17 +71,17 @@ func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
 
 type Bytecode struct {
 	Blob          []OpCode
-	ConstantsPool []Value
+	ConstantsPool []values.Value
 }
 
 func NewBytecode() Bytecode {
 	return Bytecode{
 		Blob:          []OpCode{},
-		ConstantsPool: []Value{},
+		ConstantsPool: []values.Value{},
 	}
 }
 
-func (b *Bytecode) AddConstant(v Value) uint {
+func (b *Bytecode) AddConstant(v values.Value) uint {
 	b.ConstantsPool = append(b.ConstantsPool, v)
 	return uint(len(b.ConstantsPool) - 1)
 }
