@@ -14,7 +14,10 @@
 
 package vm
 
-import "github.com/RohitAwate/commaql/vm/values"
+import (
+	"github.com/RohitAwate/commaql/table"
+	"github.com/RohitAwate/commaql/vm/values"
+)
 
 type OpCode uint
 
@@ -72,6 +75,7 @@ func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
 type Bytecode struct {
 	Blob          []OpCode
 	ConstantsPool []values.Value
+	TableContext  []*table.Table
 }
 
 func NewBytecode() Bytecode {
@@ -86,12 +90,24 @@ func (b *Bytecode) AddConstant(v values.Value) uint {
 	return uint(len(b.ConstantsPool) - 1)
 }
 
+func (b *Bytecode) AddTableContext(t *table.Table) uint {
+	b.TableContext = append(b.TableContext, t)
+	return uint(len(b.TableContext) - 1)
+}
+
 func (b *Bytecode) Emit(oc OpCode) uint {
 	b.Blob = append(b.Blob, oc)
 	return uint(len(b.Blob))
 }
 
-func (b *Bytecode) EmitWithArg(oc OpCode, arg uint) uint {
-	b.Blob = append(b.Blob, oc, OpCode(arg))
-	return uint(len(b.Blob) - 2)
+func (b *Bytecode) EmitWithArgs(oc OpCode, args ...uint) uint {
+	convertedArgs := make([]OpCode, len(args)+1)
+
+	convertedArgs[0] = oc
+	for i, arg := range args {
+		convertedArgs[i+1] = OpCode(arg)
+	}
+
+	b.Blob = append(b.Blob, convertedArgs...)
+	return uint(len(b.Blob) - len(convertedArgs))
 }

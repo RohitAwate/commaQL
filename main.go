@@ -24,7 +24,7 @@ func main() {
 				amount,
 				payment_date
 			FROM
-				customer
+				superhero
 			WHERE amount = 100 - 2
 			ORDER BY payment_date, amount;`
 

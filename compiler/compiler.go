@@ -25,7 +25,7 @@ import (
 )
 
 type Compiler struct {
-	Tables []table.Table
+	tableContext map[string]*table.Table
 }
 
 func NewCompiler(filepath string) (*Compiler, error) {
@@ -34,12 +34,16 @@ func NewCompiler(filepath string) (*Compiler, error) {
 		return nil, fmt.Errorf("file not found: %s", filepath)
 	}
 
-	csvTable, err := table.NewCSVTable(reader)
+	var csvTable table.Table
+	csvTable, err = table.NewCSVTable(reader)
 	if err != nil {
 		return nil, fmt.Errorf("could not read from file: %s", filepath)
 	}
 
-	return &Compiler{Tables: []table.Table{csvTable}}, nil
+	tableContext := map[string]*table.Table{
+		"superhero": &csvTable, // TODO: Remove hardcoded value
+	}
+	return &Compiler{tableContext: tableContext}, nil
 }
 
 func (c *Compiler) Compile(query string) {
@@ -49,8 +53,14 @@ func (c *Compiler) Compile(query string) {
 	p := parser.Parser{Tokens: tokens}
 	statements, _ := p.Run()
 
-	cg, _ := codegen.NewCodeGenerator(statements)
+	cg, _ := codegen.NewCodeGenerator(statements, c.tableContext)
 	cg.Run()
+
+	if len(cg.Errors) > 0 {
+		for _, err := range cg.Errors {
+			fmt.Println(err.Message)
+		}
+	}
 
 	disassembler.Disassemble(&cg.Code)
 }

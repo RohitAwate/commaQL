@@ -19,24 +19,27 @@ import (
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"github.com/RohitAwate/commaql/table"
 	"github.com/RohitAwate/commaql/vm"
 	"github.com/RohitAwate/commaql/vm/values"
 )
 
 type CodeGenerator struct {
-	statements []ast.Stmt
-	Code       vm.Bytecode
-	Errors     []common.Error
+	statements   []ast.Stmt
+	Code         vm.Bytecode
+	Errors       []common.Error
+	tableContext map[string]*table.Table
 }
 
-func NewCodeGenerator(statements []ast.Stmt) (*CodeGenerator, error) {
+func NewCodeGenerator(statements []ast.Stmt, tableContext map[string]*table.Table) (*CodeGenerator, error) {
 	if statements == nil {
 		return nil, fmt.Errorf("root of AST cannot be nil")
 	}
 
 	return &CodeGenerator{
-		statements: statements,
-		Code:       vm.NewBytecode(),
+		statements:   statements,
+		Code:         vm.NewBytecode(),
+		tableContext: tableContext,
 	}, nil
 }
 
@@ -53,11 +56,15 @@ func (cg *CodeGenerator) Run() common.PhaseStatus {
 
 func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	for _, tableNode := range ss.Tables {
-		val := values.String{Meta: tableNode.TableToken.Lexeme}
-		loc := cg.Code.AddConstant(val)
-
-		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
-		cg.Code.Emit(vm.OpLoadTable)
+		if resolvedTable, ok := cg.tableContext[tableNode.TableToken.Lexeme]; !ok {
+			cg.emitError(fmt.Sprintf("unknown table: %s", tableNode.TableToken.Lexeme), tableNode.TableToken)
+			return
+		} else {
+			loc := cg.Code.AddTableContext(resolvedTable)
+			var tableRegisterIndex uint = 1 // TODO: make this dynamic for a pair of tables at a time
+			cg.Code.EmitWithArgs(vm.OpLoadTable, loc, tableRegisterIndex)
+			cg.Code.Emit(vm.OpLoadTable)
+		}
 	}
 
 	cg.Code.Emit(vm.OpSetExecCtx)
@@ -98,17 +105,17 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 		// TODO: Write a helper for this, lots of duplication between these cases
 		val := values.NewNumber(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+		cg.Code.EmitWithArgs(vm.OpLoadConst, loc)
 	case tokenizer.TRUE:
 		fallthrough
 	case tokenizer.FALSE:
 		val := values.NewBoolean(lit.Meta.Type)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+		cg.Code.EmitWithArgs(vm.OpLoadConst, loc)
 	case tokenizer.STRING:
 		val := values.NewString(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
-		cg.Code.EmitWithArg(vm.OpLoadConst, loc)
+		cg.Code.EmitWithArgs(vm.OpLoadConst, loc)
 	default:
 		// FIXME
 	}
@@ -147,4 +154,8 @@ func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {
 
 func (cg *CodeGenerator) visitGroupedExpr(ge *ast.GroupedExpr) {
 	cg.visitExpr(&ge.InnerExpr)
+}
+
+func (cg *CodeGenerator) emitError(msg string, token common.Token) {
+	cg.Errors = append(cg.Errors, common.Error{Message: msg, Location: token.Location})
 }
