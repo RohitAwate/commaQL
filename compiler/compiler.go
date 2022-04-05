@@ -41,7 +41,7 @@ func NewCompiler(filepath string) (*Compiler, error) {
 	}
 
 	tableContext := map[string]*table.Table{
-		"superhero": &csvTable, // TODO: Remove hardcoded value
+		table.GetTableNameFromFile(filepath): &csvTable,
 	}
 	return &Compiler{tableContext: tableContext}, nil
 }
