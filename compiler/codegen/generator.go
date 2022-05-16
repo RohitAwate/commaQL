@@ -16,6 +16,7 @@ package codegen
 
 import (
 	"fmt"
+
 	"github.com/RohitAwate/commaql/compiler/ast"
 	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
@@ -63,7 +64,6 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 			loc := cg.Code.AddTableContext(resolvedTable)
 			var tableRegisterIndex uint = 1 // TODO: make this dynamic for a pair of tables at a time
 			cg.Code.EmitWithArgs(vm.OpLoadTable, loc, tableRegisterIndex)
-			cg.Code.Emit(vm.OpLoadTable)
 		}
 	}
 

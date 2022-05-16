@@ -34,6 +34,7 @@ func NewCompiler(filepath string) (*Compiler, error) {
 		return nil, fmt.Errorf("file not found: %s", filepath)
 	}
 
+	// TODO: Deduce filetype and build appropriate table
 	var csvTable table.Table
 	csvTable, err = table.NewCSVTable(reader)
 	if err != nil {
@@ -47,6 +48,8 @@ func NewCompiler(filepath string) (*Compiler, error) {
 }
 
 func (c *Compiler) Compile(query string) {
+	// TODO: Maybe return cg.Code from here so that code can be fed into VM
+
 	t := tokenizer.Tokenizer{Query: query}
 	tokens, _ := t.Run()
 
