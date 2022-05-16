@@ -17,5 +17,6 @@ package vm
 import "github.com/RohitAwate/commaql/table"
 
 type ExecutionContext struct {
-	t1, t2 *table.Table
+	// Table Registers
+	TR [2]*table.Table
 }

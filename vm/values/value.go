@@ -31,7 +31,7 @@ type Number struct {
 
 func (n Number) amValue() {}
 func (n Number) String() string {
-	return fmt.Sprintf("%f", n.Meta)
+	return fmt.Sprintf("%.2f", n.Meta)
 }
 
 func NewNumber(lexeme string) *Number {
