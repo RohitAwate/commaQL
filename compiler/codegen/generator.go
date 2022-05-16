@@ -144,11 +144,19 @@ var binaryOperatorToOpCode = map[common.TokenType]vm.OpCode{
 	tokenizer.LESS_EQUALS:    vm.OpLessEquals,
 	tokenizer.EQUALS:         vm.OpEquals,
 	tokenizer.NOT_EQUALS:     vm.OpNotEquals,
+	tokenizer.AND:            vm.OpAnd,
+	tokenizer.OR:             vm.OpOr,
 }
 
 func (cg *CodeGenerator) visitBinaryExpr(be *ast.BinaryExpr) {
 	cg.visitExpr(&be.RightOperand)
 	cg.visitExpr(&be.LeftOperand)
+
+	// TODO: Get rid of this
+	if _, ok := binaryOperatorToOpCode[be.Operator.Type]; !ok {
+		panic("Binary operator to opcode mapping not found: " + string(be.Operator.Lexeme))
+	}
+
 	cg.Code.Emit(binaryOperatorToOpCode[be.Operator.Type])
 }
 

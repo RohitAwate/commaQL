@@ -34,6 +34,8 @@ const (
 	OpLessEquals
 	OpEquals
 	OpNotEquals
+	OpAnd
+	OpOr
 	OpNegate
 	OpNot
 	OpLoadTable
@@ -63,6 +65,8 @@ var opCodeInfoMap = map[OpCode]OpCodeInfo{
 	OpLessEquals:    {0, 0, 0, 2, "OpLessEquals"},
 	OpEquals:        {0, 0, 0, 2, "OpEquals"},
 	OpNotEquals:     {0, 0, 0, 2, "OpNotEquals"},
+	OpAnd:           {0, 0, 0, 2, "OpAnd"},
+	OpOr:            {0, 0, 0, 2, "OpOr"},
 	OpNegate:        {0, 0, 0, 1, "OpNegate"},
 	OpNot:           {0, 0, 0, 1, "OpNot"},
 	OpLoadTable:     {1, 0, 1, 0, "OpLoadTable"},

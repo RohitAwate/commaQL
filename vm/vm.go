@@ -34,15 +34,92 @@ func NewVM() VM {
 	}
 }
 
+func binaryOp(left, right *values.Value, opCode OpCode) values.Value {
+	if leftNum, ok := (*left).(*values.Number); ok {
+		if rightNum, ok := (*right).(*values.Number); ok {
+			switch opCode {
+			case OpAdd:
+				return values.NewNumberFromValue(leftNum.Meta + rightNum.Meta)
+			case OpSubtract:
+				return values.NewNumberFromValue(leftNum.Meta - rightNum.Meta)
+			case OpMultiply:
+				return values.NewNumberFromValue(leftNum.Meta * rightNum.Meta)
+			case OpDivide:
+				return values.NewNumberFromValue(leftNum.Meta / rightNum.Meta)
+			case OpEquals:
+				return values.NewBooleanFromValue(leftNum.Meta == rightNum.Meta)
+			case OpNotEquals:
+				return values.NewBooleanFromValue(leftNum.Meta != rightNum.Meta)
+			case OpGreaterEquals:
+				return values.NewBooleanFromValue(leftNum.Meta >= rightNum.Meta)
+			case OpGreaterThan:
+				return values.NewBooleanFromValue(leftNum.Meta > rightNum.Meta)
+			case OpLessEquals:
+				return values.NewBooleanFromValue(leftNum.Meta <= rightNum.Meta)
+			case OpLessThan:
+				return values.NewBooleanFromValue(leftNum.Meta < rightNum.Meta)
+			default:
+				panic("Not implemented!")
+			}
+		}
+	}
+
+	if leftVal, ok := (*left).(*values.Boolean); ok {
+		if rightVal, ok := (*right).(*values.Boolean); ok {
+			switch opCode {
+			case OpAnd:
+				return values.NewBooleanFromValue(leftVal.Meta && rightVal.Meta)
+			case OpOr:
+				return values.NewBooleanFromValue(leftVal.Meta || rightVal.Meta)
+			default:
+				panic("Not implemented!")
+			}
+		}
+	}
+
+	panic(0) // TODO: Handle this better! Also think about string concat
+}
+
 func (vm *VM) Run(bc Bytecode) {
 	for vm.ip = 0; vm.ip < uint(len(bc.Blob)); vm.ip++ {
-		switch bc.Blob[vm.ip] {
+		opCode := bc.Blob[vm.ip]
+		switch opCode {
 		case OpLoadConst:
 			vm.ip++
 			constOffset := bc.Blob[vm.ip]
 			vm.stack.push(&bc.ConstantsPool[constOffset])
+		case OpAdd:
+			fallthrough
+		case OpSubtract:
+			fallthrough
+		case OpMultiply:
+			fallthrough
+		case OpDivide:
+			fallthrough
+		case OpAnd:
+			fallthrough
+		case OpOr:
+			fallthrough
+		case OpGreaterThan:
+			fallthrough
+		case OpGreaterEquals:
+			fallthrough
+		case OpLessThan:
+			fallthrough
+		case OpLessEquals:
+			fallthrough
+		case OpEquals:
+			fallthrough
+		case OpNotEquals:
+			leftOperand := vm.stack.pop()
+			rightOperand := vm.stack.pop()
+			res := binaryOp(leftOperand, rightOperand, opCode)
+			vm.stack.push(&res)
 		}
 	}
 
-	fmt.Println(vm.stack.meta)
+	// TODO: Get rid of this
+	for _, val := range vm.stack.meta {
+		fmt.Println(*val)
+	}
 }

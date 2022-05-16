@@ -39,6 +39,10 @@ func NewNumber(lexeme string) *Number {
 	return &Number{Meta: number}
 }
 
+func NewNumberFromValue(val float64) *Number {
+	return &Number{Meta: val}
+}
+
 type String struct {
 	Meta string
 }
@@ -63,4 +67,8 @@ func (b Boolean) String() string {
 
 func NewBoolean(tokenType common.TokenType) *Boolean {
 	return &Boolean{Meta: tokenType == tokenizer.TRUE}
+}
+
+func NewBooleanFromValue(val bool) *Boolean {
+	return &Boolean{Meta: val}
 }

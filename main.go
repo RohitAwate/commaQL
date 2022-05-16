@@ -28,7 +28,7 @@ func main() {
 				payment_date
 			FROM
 				superhero
-			WHERE amount = 100 - 2
+			WHERE 100 - 2 = 98 AND 50-2*4 = 42
 			ORDER BY payment_date, amount;`
 
 	c, _ := compiler.NewCompiler("superhero.csv")
