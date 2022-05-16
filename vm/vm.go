@@ -16,19 +16,22 @@ package vm
 
 import (
 	"fmt"
+	"github.com/RohitAwate/commaql/table"
 	"github.com/RohitAwate/commaql/vm/values"
 )
 
 type VM struct {
-	ctx ExecutionContext
-
+	// Table Context Registers
+	// 0: Main register (all queries are executed with this context)
+	// 1: Working register for joins, sub-queries, etc
+	tcr   [2]*table.Table
 	stack stack
 	ip    uint
 }
 
 func NewVM() VM {
 	return VM{
-		ctx:   ExecutionContext{},
+		tcr:   [2]*table.Table{},
 		stack: stack{meta: []*values.Value{}},
 		ip:    0,
 	}
@@ -115,6 +118,13 @@ func (vm *VM) Run(bc Bytecode) {
 			rightOperand := vm.stack.pop()
 			res := binaryOp(leftOperand, rightOperand, opCode)
 			vm.stack.push(&res)
+		case OpLoadTable:
+			// OpLoadTable table_ctx_idx table_ctx_register_idx
+			vm.ip++
+			tableCtx := bc.TableContext[bc.Blob[vm.ip]]
+
+			vm.ip++
+			vm.tcr[bc.Blob[vm.ip]] = tableCtx
 		}
 	}
 

@@ -62,7 +62,7 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 			return
 		} else {
 			loc := cg.Code.AddTableContext(resolvedTable)
-			var tableRegisterIndex uint = 1 // TODO: make this dynamic for a pair of tables at a time
+			var tableRegisterIndex uint = 0 // TODO: make this dynamic for a pair of tables at a time
 			cg.Code.EmitWithArgs(vm.OpLoadTable, loc, tableRegisterIndex)
 		}
 	}

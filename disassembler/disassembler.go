@@ -44,6 +44,8 @@ func Disassemble(bc *vm.Bytecode) {
 			bytecodeLine.WriteString(fmt.Sprintf(" %si:%d%s", ColorGreen, arg, ColorReset))
 		}
 
+		offset += int(opCodeInfo.InlineArgs)
+
 		var constOffsetArgs strings.Builder
 		for argOffset := 1; argOffset <= int(opCodeInfo.ConstantOffsetArgs); argOffset++ {
 			arg := bc.Blob[offset+argOffset]
@@ -53,14 +55,18 @@ func Disassemble(bc *vm.Bytecode) {
 			constOffsetArgs.WriteString(fmt.Sprintf("\t %s# c:%d: %s%s\n", ColorBlue, arg, val, ColorReset))
 		}
 
+		offset += int(opCodeInfo.ConstantOffsetArgs)
+
 		var tableRegisterArgsLine strings.Builder
-		for argOffset := 1; argOffset <= int(opCodeInfo.TableRegisterArgs); argOffset++ {
+		for argOffset := 0; argOffset < int(opCodeInfo.TableRegisterArgs); argOffset++ {
 			arg := bc.Blob[offset+argOffset]
 			bytecodeLine.WriteString(fmt.Sprintf(" %st:%d%s", ColorYellow, arg, ColorReset))
 
 			table := *bc.TableContext[arg]
 			tableRegisterArgsLine.WriteString(fmt.Sprintf("\t %s# t:%d: %s%s\n", ColorYellow, arg, table.Name(), ColorReset))
 		}
+
+		offset += int(opCodeInfo.TableRegisterArgs)
 
 		fmt.Println(bytecodeLine.String())
 		if opCodeInfo.ConstantOffsetArgs > 0 {
@@ -70,7 +76,5 @@ func Disassemble(bc *vm.Bytecode) {
 		if opCodeInfo.TableRegisterArgs > 0 {
 			fmt.Print(tableRegisterArgsLine.String())
 		}
-
-		offset += int(opCodeInfo.InlineArgs) + int(opCodeInfo.TableRegisterArgs) + int(opCodeInfo.ConstantOffsetArgs)
 	}
 }
