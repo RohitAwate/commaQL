@@ -21,5 +21,4 @@ type VM struct {
 }
 
 func (vm *VM) Run(code Bytecode) {
-
 }
