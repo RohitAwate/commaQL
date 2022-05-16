@@ -15,34 +15,31 @@
 package vm
 
 import (
-	"fmt"
 	"github.com/RohitAwate/commaql/vm/values"
 )
 
-type VM struct {
-	ctx ExecutionContext
-
-	stack stack
-	ip    uint
+type stack struct {
+	meta []*values.Value
 }
 
-func NewVM() VM {
-	return VM{
-		ctx:   ExecutionContext{},
-		stack: stack{meta: []*values.Value{}},
-		ip:    0,
-	}
+func (st *stack) push(v *values.Value) {
+	st.meta = append(st.meta, v)
 }
 
-func (vm *VM) Run(bc Bytecode) {
-	for vm.ip = 0; vm.ip < uint(len(bc.Blob)); vm.ip++ {
-		switch bc.Blob[vm.ip] {
-		case OpLoadConst:
-			vm.ip++
-			constOffset := bc.Blob[vm.ip]
-			vm.stack.push(&bc.ConstantsPool[constOffset])
-		}
+func (st *stack) peek() *values.Value {
+	if len(st.meta) > 0 {
+		return st.meta[len(st.meta)-1]
 	}
 
-	fmt.Println(vm.stack.meta)
+	return nil
+}
+
+func (st *stack) pop() *values.Value {
+	if len(st.meta) > 0 {
+		topOfStack := st.meta[len(st.meta)-1]
+		st.meta = st.meta[:len(st.meta)-1]
+		return topOfStack
+	}
+
+	return nil
 }
