@@ -67,8 +67,6 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 		}
 	}
 
-	cg.Code.Emit(vm.OpSetExecCtx)
-
 	if ss.WhereClause != nil {
 		cg.visitWhereClause(&ss.WhereClause)
 	}
