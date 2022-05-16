@@ -14,7 +14,10 @@
 
 package main
 
-import "github.com/RohitAwate/commaql/compiler"
+import (
+	"github.com/RohitAwate/commaql/compiler"
+	"github.com/RohitAwate/commaql/vm"
+)
 
 func main() {
 	query := `SELECT
@@ -29,5 +32,8 @@ func main() {
 			ORDER BY payment_date, amount;`
 
 	c, _ := compiler.NewCompiler("superhero.csv")
-	c.Compile(query)
+	bytecode := c.Compile(query)
+
+	vm_ := vm.NewVM()
+	vm_.Run(bytecode)
 }

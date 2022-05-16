@@ -21,6 +21,7 @@ import (
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/disassembler"
 	"github.com/RohitAwate/commaql/table"
+	"github.com/RohitAwate/commaql/vm"
 	"os"
 )
 
@@ -47,7 +48,7 @@ func NewCompiler(filepath string) (*Compiler, error) {
 	return &Compiler{tableContext: tableContext}, nil
 }
 
-func (c *Compiler) Compile(query string) {
+func (c *Compiler) Compile(query string) vm.Bytecode {
 	// TODO: Maybe return cg.Code from here so that code can be fed into VM
 
 	t := tokenizer.Tokenizer{Query: query}
@@ -66,4 +67,6 @@ func (c *Compiler) Compile(query string) {
 	}
 
 	disassembler.Disassemble(&cg.Code)
+
+	return cg.Code
 }
