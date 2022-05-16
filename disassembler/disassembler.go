@@ -35,23 +35,34 @@ func Disassemble(bc *vm.Bytecode) {
 	for offset := 0; offset < len(bc.Blob); offset++ {
 		opCode := bc.Blob[offset]
 		opCodeInfo := vm.GetOpCodeInfo(opCode)
-		var bytecodeLine strings.Builder
-		bytecodeLine.WriteString(fmt.Sprintf("%5d\t%s%s%-15s%s", offset, ColorYellow, FormatBold, opCodeInfo.PrintableName, ColorReset))
 
-		var argsInfoBuilder strings.Builder
-		for argOffset := 1; argOffset < int(opCodeInfo.Args)+1; argOffset++ {
+		var bytecodeLine strings.Builder
+		bytecodeLine.WriteString(fmt.Sprintf("%5d\t%s%s%-15s%s", offset, ColorRed, FormatBold, opCodeInfo.PrintableName, ColorReset))
+
+		for argOffset := 1; argOffset <= int(opCodeInfo.InlineArgs); argOffset++ {
 			arg := bc.Blob[offset+argOffset]
-			bytecodeLine.WriteString(fmt.Sprintf(" %s%d%s", ColorBlue, arg, ColorReset))
+			bytecodeLine.WriteString(fmt.Sprintf(" %si:%d%s", ColorGreen, arg, ColorReset))
+		}
+
+		var constOffsetArgs strings.Builder
+		for argOffset := 1; argOffset <= int(opCodeInfo.ConstantOffsetArgs); argOffset++ {
+			arg := bc.Blob[offset+argOffset]
+			bytecodeLine.WriteString(fmt.Sprintf(" %sc:%d%s", ColorBlue, arg, ColorReset))
 
 			val := bc.ConstantsPool[arg]
-			argsInfoBuilder.WriteString(fmt.Sprintf("\t %s# %d: %s%s\n", ColorBlue, arg, val, ColorReset))
+			constOffsetArgs.WriteString(fmt.Sprintf("\t %s# c:%d: %s%s\n", ColorBlue, arg, val, ColorReset))
+		}
+
+		for argOffset := 1; argOffset <= int(opCodeInfo.TableRegisterArgs); argOffset++ {
+			arg := bc.Blob[offset+argOffset]
+			bytecodeLine.WriteString(fmt.Sprintf(" %st:%d%s", ColorYellow, arg, ColorReset))
 		}
 
 		fmt.Println(bytecodeLine.String())
-		if opCodeInfo.Args > 0 {
-			fmt.Print(argsInfoBuilder.String())
+		if opCodeInfo.ConstantOffsetArgs > 0 {
+			fmt.Print(constOffsetArgs.String())
 		}
 
-		offset += int(opCodeInfo.Args)
+		offset += int(opCodeInfo.InlineArgs) + int(opCodeInfo.TableRegisterArgs) + int(opCodeInfo.ConstantOffsetArgs)
 	}
 }

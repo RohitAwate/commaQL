@@ -43,29 +43,32 @@ const (
 )
 
 type OpCodeInfo struct {
-	PrintableName string
-	Args          uint8
+	TableRegisterArgs  uint8
+	ConstantOffsetArgs uint8
+	InlineArgs         uint8
+	StackArgs          uint8
+	PrintableName      string
 }
 
 var opCodeInfoMap = map[OpCode]OpCodeInfo{
-	OpAdd:           {"OpAdd", 0},
-	OpSubtract:      {"OpSubtract", 0},
-	OpMultiply:      {"OpMultiply", 0},
-	OpDivide:        {"OpDivide", 0},
-	OpModulo:        {"OpModulo", 0},
-	OpExponent:      {"OpExponent", 0},
-	OpGreaterThan:   {"OpGreaterThan", 0},
-	OpGreaterEquals: {"OpGreaterEquals", 0},
-	OpLessThan:      {"OpLessThan", 0},
-	OpLessEquals:    {"OpLessEquals", 0},
-	OpEquals:        {"OpEquals", 0},
-	OpNotEquals:     {"OpNotEquals", 0},
-	OpNegate:        {"OpNegate", 0},
-	OpNot:           {"OpNot", 0},
-	OpLoadTable:     {"OpLoadTable", 0},
-	OpJoin:          {"OpJoin", 0},
-	OpLoadConst:     {"OpLoadConst", 1},
-	OpSetExecCtx:    {"OpSetExecCtx", 0},
+	OpAdd:           {0, 0, 0, 2, "OpAdd"},
+	OpSubtract:      {0, 0, 0, 2, "OpSubtract"},
+	OpMultiply:      {0, 0, 0, 2, "OpMultiply"},
+	OpDivide:        {0, 0, 0, 2, "OpDivide"},
+	OpModulo:        {0, 0, 0, 2, "OpModulo"},
+	OpExponent:      {0, 0, 0, 2, "OpExponent"},
+	OpGreaterThan:   {0, 0, 0, 2, "OpGreaterThan"},
+	OpGreaterEquals: {0, 0, 0, 2, "OpGreaterEquals"},
+	OpLessThan:      {0, 0, 0, 2, "OpLessThan"},
+	OpLessEquals:    {0, 0, 0, 2, "OpLessEquals"},
+	OpEquals:        {0, 0, 0, 2, "OpEquals"},
+	OpNotEquals:     {0, 0, 0, 2, "OpNotEquals"},
+	OpNegate:        {0, 0, 0, 1, "OpNegate"},
+	OpNot:           {0, 0, 0, 1, "OpNot"},
+	OpLoadTable:     {1, 0, 1, 0, "OpLoadTable"},
+	OpJoin:          {0, 0, 0, 0, "OpJoin"},
+	OpLoadConst:     {0, 1, 0, 0, "OpLoadConst"},
+	OpSetExecCtx:    {0, 0, 0, 0, "OpSetExecCtx"},
 }
 
 func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
