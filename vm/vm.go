@@ -125,6 +125,8 @@ func (vm *VM) Run(bc Bytecode) {
 
 			vm.ip++
 			vm.tcr[bc.Blob[vm.ip]] = tableCtx
+		default:
+			panic("Instruction not implemented: " + string(opCode))
 		}
 	}
 
