@@ -41,6 +41,10 @@ const (
 	OpLoadTable
 	OpJoin
 	OpLoadConst
+
+	OpScan
+
+	OpSelectColumn
 )
 
 type OpCodeInfo struct {
@@ -71,6 +75,7 @@ var opCodeInfoMap = map[OpCode]OpCodeInfo{
 	OpLoadTable:     {1, 0, 1, 0, "OpLoadTable"},
 	OpJoin:          {0, 0, 0, 0, "OpJoin"},
 	OpLoadConst:     {0, 1, 0, 0, "OpLoadConst"},
+	OpSelectColumn:  {0, 0, 2, 0, "OpSelectColumn"},
 }
 
 func GetOpCodeInfo(opCode OpCode) OpCodeInfo {

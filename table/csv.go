@@ -2,6 +2,7 @@ package table
 
 import (
 	"encoding/csv"
+	"fmt"
 	"github.com/RohitAwate/commaql/vm/values"
 	"os"
 	"strings"
@@ -86,4 +87,14 @@ func (ct CSVTable) nextRow() ([]string, error) {
 	}
 
 	return row, nil
+}
+
+func (ct CSVTable) IndexOfColumn(colName string) (uint, error) {
+	for idx, col := range ct.columns {
+		if col.Name == colName {
+			return uint(idx), nil
+		}
+	}
+
+	return 0, fmt.Errorf("column %s not found in table %s", colName, ct.Name())
 }

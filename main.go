@@ -21,11 +21,11 @@ import (
 
 func main() {
 	query := `SELECT
-				customer_id,
-				first_name,
-				last_name,
-				amount,
-				payment_date
+				name,
+				Gender,
+				Publisher,
+				Height,
+				Race
 			FROM
 				superhero
 			WHERE 100 - 2 = 98 AND 50-2*4 = 42

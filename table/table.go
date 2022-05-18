@@ -26,4 +26,5 @@ type Table interface {
 	Columns() []Column
 	LoadData()
 	NextRow() ([]values.Value, error)
+	IndexOfColumn(colName string) (uint, error)
 }

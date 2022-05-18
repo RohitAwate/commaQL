@@ -70,6 +70,24 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	if ss.WhereClause != nil {
 		cg.visitWhereClause(&ss.WhereClause)
 	}
+
+	// column resolution
+	for _, selectCol := range ss.Columns {
+		for tableIdx, tableNode := range ss.Tables {
+			tableCtx, ok := cg.tableContext[tableNode.TableToken.Lexeme]
+
+			if !ok {
+				cg.emitError("table not found", tableNode.TableToken)
+				continue
+			}
+
+			if colIdx, err := (*tableCtx).IndexOfColumn(selectCol.ColumnToken.Lexeme); err != nil {
+				cg.emitError(err.Error(), selectCol.ColumnToken)
+			} else {
+				cg.Code.EmitWithArgs(vm.OpSelectColumn, uint(tableIdx), colIdx)
+			}
+		}
+	}
 }
 
 func (cg *CodeGenerator) visitWhereClause(expr *ast.Expr) {
