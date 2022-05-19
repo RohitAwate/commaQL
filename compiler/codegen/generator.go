@@ -84,7 +84,7 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 		jumpOffset := cg.Code.Emit(vm.OpScan) + 1
 		cg.visitWhereClause(&ss.WhereClause)
 		cg.Code.EmitWithArgs(vm.OpJumpIfScan, jumpOffset)
-	}
+	} // else use OpSelectRow until all
 
 	// column resolution
 	for _, selectCol := range ss.Columns {
@@ -100,6 +100,7 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 
 func (cg *CodeGenerator) visitWhereClause(expr *ast.Expr) {
 	cg.visitExpr(expr)
+	cg.Code.Emit(vm.OpSelectRowIfTrue)
 }
 
 func (cg *CodeGenerator) visitOrderByClause(obc *ast.OrderByClause) {

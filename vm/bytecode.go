@@ -49,6 +49,7 @@ const (
 	OpLoadVal
 
 	OpSelectColumn
+	OpSelectRowIfTrue
 )
 
 type OpCodeInfo struct {
@@ -60,29 +61,30 @@ type OpCodeInfo struct {
 }
 
 var opCodeInfoMap = map[OpCode]OpCodeInfo{
-	OpAdd:           {0, 0, 0, 2, "OpAdd"},
-	OpSubtract:      {0, 0, 0, 2, "OpSubtract"},
-	OpMultiply:      {0, 0, 0, 2, "OpMultiply"},
-	OpDivide:        {0, 0, 0, 2, "OpDivide"},
-	OpModulo:        {0, 0, 0, 2, "OpModulo"},
-	OpExponent:      {0, 0, 0, 2, "OpExponent"},
-	OpGreaterThan:   {0, 0, 0, 2, "OpGreaterThan"},
-	OpGreaterEquals: {0, 0, 0, 2, "OpGreaterEquals"},
-	OpLessThan:      {0, 0, 0, 2, "OpLessThan"},
-	OpLessEquals:    {0, 0, 0, 2, "OpLessEquals"},
-	OpEquals:        {0, 0, 0, 2, "OpEquals"},
-	OpNotEquals:     {0, 0, 0, 2, "OpNotEquals"},
-	OpAnd:           {0, 0, 0, 2, "OpAnd"},
-	OpOr:            {0, 0, 0, 2, "OpOr"},
-	OpNegate:        {0, 0, 0, 1, "OpNegate"},
-	OpNot:           {0, 0, 0, 1, "OpNot"},
-	OpLoadTable:     {1, 0, 1, 0, "OpLoadTable"},
-	OpJoin:          {0, 0, 0, 0, "OpJoin"},
-	OpLoadConst:     {0, 1, 0, 0, "OpLoadConst"},
-	OpSelectColumn:  {0, 0, 2, 0, "OpSelectColumn"},
-	OpLoadVal:       {0, 0, 1, 0, "OpLoadVal"},
-	OpScan:          {0, 0, 0, 0, "OpScan"},
-	OpJumpIfScan:    {0, 0, 1, 0, "OpJumpIfScan"},
+	OpAdd:             {0, 0, 0, 2, "OpAdd"},
+	OpSubtract:        {0, 0, 0, 2, "OpSubtract"},
+	OpMultiply:        {0, 0, 0, 2, "OpMultiply"},
+	OpDivide:          {0, 0, 0, 2, "OpDivide"},
+	OpModulo:          {0, 0, 0, 2, "OpModulo"},
+	OpExponent:        {0, 0, 0, 2, "OpExponent"},
+	OpGreaterThan:     {0, 0, 0, 2, "OpGreaterThan"},
+	OpGreaterEquals:   {0, 0, 0, 2, "OpGreaterEquals"},
+	OpLessThan:        {0, 0, 0, 2, "OpLessThan"},
+	OpLessEquals:      {0, 0, 0, 2, "OpLessEquals"},
+	OpEquals:          {0, 0, 0, 2, "OpEquals"},
+	OpNotEquals:       {0, 0, 0, 2, "OpNotEquals"},
+	OpAnd:             {0, 0, 0, 2, "OpAnd"},
+	OpOr:              {0, 0, 0, 2, "OpOr"},
+	OpNegate:          {0, 0, 0, 1, "OpNegate"},
+	OpNot:             {0, 0, 0, 1, "OpNot"},
+	OpLoadTable:       {1, 0, 1, 0, "OpLoadTable"},
+	OpJoin:            {0, 0, 0, 0, "OpJoin"},
+	OpLoadConst:       {0, 1, 0, 0, "OpLoadConst"},
+	OpSelectColumn:    {0, 0, 2, 0, "OpSelectColumn"},
+	OpSelectRowIfTrue: {0, 0, 0, 0, "OpSelectRowIfTrue"},
+	OpLoadVal:         {0, 0, 1, 0, "OpLoadVal"},
+	OpScan:            {0, 0, 0, 0, "OpScan"},
+	OpJumpIfScan:      {0, 0, 1, 0, "OpJumpIfScan"},
 }
 
 func GetOpCodeInfo(opCode OpCode) OpCodeInfo {

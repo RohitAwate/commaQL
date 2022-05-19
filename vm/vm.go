@@ -156,6 +156,10 @@ func (vm *VM) Run(bc Bytecode) {
 				vm.itr = 0
 				vm.lim = 0
 			}
+		case OpSelectRowIfTrue:
+			if vm.stack.pop().(values.Boolean).Meta {
+				vm.tcr[0].markRowSelected(vm.itr - 1)
+			}
 		default:
 			panic("instruction not implemented: " + GetOpCodeInfo(opCode).PrintableName)
 		}
