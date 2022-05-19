@@ -15,7 +15,6 @@
 package vm
 
 import (
-	"fmt"
 	"github.com/RohitAwate/commaql/vm/values"
 )
 
@@ -95,7 +94,7 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 	panic(0) // TODO: Handle this better! Also think about string operations
 }
 
-func (vm *VM) Run(bc Bytecode) {
+func (vm *VM) Run(bc Bytecode) ResultSet {
 	readArg := func() OpCode {
 		vm.ip++
 		return bc.Blob[vm.ip]
@@ -103,8 +102,6 @@ func (vm *VM) Run(bc Bytecode) {
 
 	for vm.ip = 0; vm.ip < uint(len(bc.Blob)); vm.ip++ {
 		opCode := bc.Blob[vm.ip]
-
-		fmt.Printf("Executing: %s\n", GetOpCodeInfo(opCode).PrintableName)
 
 		switch opCode {
 		case OpLoadConst:
@@ -146,12 +143,9 @@ func (vm *VM) Run(bc Bytecode) {
 			rows := vm.tcr[0].table.RowCount()
 			vm.lim = rows
 			vm.itr = 0
-
-			fmt.Println(vm.lim, vm.itr)
 		case OpLoadNextRow:
 			tab := vm.tcr[0].table
 			vm.row, _ = tab.GetRow(vm.itr)
-			fmt.Println(vm.row)
 			vm.itr++
 		case OpLoadVal:
 			vm.stack.push(vm.row[readArg()])
@@ -166,7 +160,6 @@ func (vm *VM) Run(bc Bytecode) {
 				vm.lim = 0
 			}
 		case OpSelectRowIfTrue:
-			fmt.Println(vm.stack.peek())
 			if vm.stack.pop().(values.Boolean).Meta {
 				vm.tcr[0].markRowSelected(vm.itr - 1)
 			}
@@ -175,12 +168,5 @@ func (vm *VM) Run(bc Bytecode) {
 		}
 	}
 
-	// TODO: Get rid of this
-	for _, val := range vm.stack.meta {
-		fmt.Println(val)
-	}
-
-	for _, t := range vm.tcr {
-		fmt.Println(t)
-	}
+	return vm.tcr[0].toResultSet()
 }

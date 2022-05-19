@@ -42,13 +42,14 @@ func (tc *tableContext) toResultSet() ResultSet {
 		Meta: make([][]values.Value, len(tc.selectedRows)),
 	}
 
-	//for idx, row := range tc.selectedRows {
-	//	result.Meta[idx] = make([]values.Value, len(tc.selectedCols))
-	//
-	//	for _, col := range tc.selectedCols {
-	//		table.get
-	//	}
-	//}
+	for selRowIdx, selRowNum := range tc.selectedRows {
+		result.Meta[selRowIdx] = make([]values.Value, len(tc.selectedCols))
+		tabRow, _ := tc.table.GetRow(selRowNum)
+
+		for selColIdx, selColNum := range tc.selectedCols {
+			result.Meta[selRowIdx][selColIdx] = tabRow[selColNum]
+		}
+	}
 
 	return result
 }

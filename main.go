@@ -15,6 +15,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/vm"
 )
@@ -26,5 +27,9 @@ func main() {
 	bytecode := c.Compile(query)
 
 	vm_ := vm.NewVM()
-	vm_.Run(bytecode)
+	resultSet := vm_.Run(bytecode)
+
+	for _, row := range resultSet.Meta {
+		fmt.Println(row)
+	}
 }
