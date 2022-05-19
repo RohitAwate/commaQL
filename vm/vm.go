@@ -69,7 +69,7 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 			case OpLessThan:
 				return values.NewBooleanFromValue(leftNum.Meta < rightNum.Meta)
 			default:
-				panic("Not implemented!")
+				panic("UnsupportedOperation")
 			}
 		}
 	}
@@ -86,12 +86,27 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 			case OpNotEquals:
 				return values.NewBooleanFromValue(leftVal.Meta != rightVal.Meta)
 			default:
-				panic("Not implemented!")
+				panic("UnsupportedOperation")
 			}
 		}
 	}
 
-	panic(0) // TODO: Handle this better! Also think about string operations
+	if leftVal, ok := left.(values.String); ok {
+		if rightVal, ok := right.(values.String); ok {
+			switch opCode {
+			case OpAdd:
+				return values.NewString(leftVal.Meta + rightVal.Meta)
+			case OpEquals:
+				return values.NewBooleanFromValue(leftVal.Meta == rightVal.Meta)
+			case OpNotEquals:
+				return values.NewBooleanFromValue(leftVal.Meta != rightVal.Meta)
+			default:
+				panic("UnsupportedOperation")
+			}
+		}
+	}
+
+	panic("UnsupportedOperation")
 }
 
 func (vm *VM) Run(bc Bytecode) ResultSet {
