@@ -44,6 +44,19 @@ func NewCodeGenerator(statements []ast.Stmt, tableContext map[string]table.Table
 	}, nil
 }
 
+func (cg *CodeGenerator) resolveColumnName(colName string) (uint, uint, error) {
+	tabIdx := 0
+	for _, tab := range cg.tableContext {
+		if colIdx, err := tab.IndexOfColumn(colName); err == nil {
+			return uint(tabIdx), colIdx, nil
+		}
+
+		tabIdx++
+	}
+
+	return 0, 0, fmt.Errorf("column name could not be resolved")
+}
+
 func (cg *CodeGenerator) Run() common.PhaseStatus {
 	for _, statement := range cg.statements {
 		switch stmt := statement.(type) {
@@ -68,25 +81,20 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	}
 
 	if ss.WhereClause != nil {
+		jumpOffset := cg.Code.Emit(vm.OpScan) + 1
 		cg.visitWhereClause(&ss.WhereClause)
+		cg.Code.EmitWithArgs(vm.OpJumpIfNotZero, jumpOffset)
 	}
 
 	// column resolution
 	for _, selectCol := range ss.Columns {
-		for tableIdx, tableNode := range ss.Tables {
-			tableCtx, ok := cg.tableContext[tableNode.TableToken.Lexeme]
-
-			if !ok {
-				cg.emitError("table not found", tableNode.TableToken)
-				continue
-			}
-
-			if colIdx, err := (*tableCtx).IndexOfColumn(selectCol.ColumnToken.Lexeme); err != nil {
-				cg.emitError(err.Error(), selectCol.ColumnToken)
-			} else {
-				cg.Code.EmitWithArgs(vm.OpSelectColumn, uint(tableIdx), colIdx)
-			}
+		tabIdx, colIdx, err := cg.resolveColumnName(selectCol.ColumnToken.Lexeme)
+		if err != nil {
+			cg.emitError(err.Error(), selectCol.ColumnToken)
+			continue
 		}
+
+		cg.Code.EmitWithArgs(vm.OpSelectColumn, tabIdx, colIdx)
 	}
 }
 
@@ -132,8 +140,16 @@ func (cg *CodeGenerator) visitLiteral(lit *ast.Literal) {
 		val := values.NewString(lit.Meta.Lexeme)
 		loc := cg.Code.AddConstant(val)
 		cg.Code.EmitWithArgs(vm.OpLoadConst, loc)
+	case tokenizer.IDENTIFIER:
+		_, colIdx, err := cg.resolveColumnName(lit.Meta.Lexeme)
+		if err != nil {
+			cg.emitError(err.Error(), lit.Meta)
+		}
+
+		cg.Code.EmitWithArgs(vm.OpLoadVal, colIdx)
 	default:
 		// FIXME
+		fmt.Println(lit)
 	}
 }
 

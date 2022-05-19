@@ -20,6 +20,9 @@ import (
 )
 
 // TODO: Maybe move this to compiler/common.go
+// TODO: Rename all to use Go's CamelCase style
+// TODO: Rename all to be prefixed by Token____ since Go throws
+// all of these into the global namespace
 const (
 	AND common.TokenType = iota // SQL Keywords
 	ALL
@@ -89,6 +92,7 @@ var SQLKeywordsToTokenType = map[string]common.TokenType{
 	"COUNT":    COUNT,
 	"DESC":     DESC,
 	"DISTINCT": DISTINCT,
+	"FALSE":    FALSE,
 	"FROM":     FROM,
 	"FULL":     FULL,
 	"GROUP":    GROUP,
@@ -108,6 +112,7 @@ var SQLKeywordsToTokenType = map[string]common.TokenType{
 	"RIGHT":    RIGHT,
 	"SELECT":   SELECT,
 	"TOP":      TOP,
+	"TRUE":     TRUE,
 	"UNION":    UNION,
 	"WHERE":    WHERE,
 }

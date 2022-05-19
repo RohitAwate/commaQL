@@ -72,7 +72,13 @@ func (ct CSVTable) LoadData() {
 	// TODO
 }
 
+func (ct CSVTable) RowCount() uint {
+	// FIXME: Get rid of placeholder
+	return 4
+}
+
 func (ct CSVTable) NextRow() ([]values.Value, error) {
+	// FIXME: WTF IS THIS PLACEHOLDER
 	return make([]values.Value, 10), nil
 }
 
