@@ -92,7 +92,7 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 		}
 	}
 
-	panic(0) // TODO: Handle this better! Also think about string concat
+	panic(0) // TODO: Handle this better! Also think about string operations
 }
 
 func (vm *VM) Run(bc Bytecode) {
@@ -146,15 +146,19 @@ func (vm *VM) Run(bc Bytecode) {
 			rows := vm.tcr[0].table.RowCount()
 			vm.lim = rows
 			vm.itr = 0
+
+			fmt.Println(vm.lim, vm.itr)
 		case OpLoadNextRow:
 			tab := vm.tcr[0].table
-			vm.row, _ = tab.NextRow()
+			vm.row, _ = tab.GetRow(vm.itr)
+			fmt.Println(vm.row)
 			vm.itr++
 		case OpLoadVal:
 			vm.stack.push(vm.row[readArg()])
 		case OpJumpIfScan:
 			// -1 to offset for the loop counter increment before the next iteration
 			jumpOffset := uint(readArg()) - 1
+			//fmt.Printf("Jumping to %s\n", GetOpCodeInfo(bc.Blob[jumpOffset+1]).PrintableName)
 			if vm.itr < vm.lim {
 				vm.ip = jumpOffset
 			} else {

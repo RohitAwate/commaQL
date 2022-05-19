@@ -4,85 +4,18 @@ import (
 	"encoding/csv"
 	"fmt"
 	"github.com/RohitAwate/commaql/vm/values"
+	"io"
 	"os"
 	"strings"
 )
 
 type CSVTable struct {
 	name    string
-	columns []Column
-	reader  *csv.Reader
+	columns []ColumnInfo
+	data    [][]values.Value
 }
 
-func NewCSVTable(file *os.File) (*CSVTable, error) {
-	table := CSVTable{
-		reader: csv.NewReader(file), name: file.Name(),
-		columns: []Column{},
-	}
-
-	// Scan the first row of the CSVs.
-	// It may or may not be the header row.
-	firstRow, err := table.nextRow()
-	if err != nil {
-		return nil, err
-	}
-
-	// We run some simple heuristics to determine if the first row is a header.
-	// A header row is the one which contains the names of all columns.
-	containsHeader := isHeaderRow(firstRow)
-
-	// Now we need to determine the data type of each column.
-	// This is done based on the first row of data. If there's a header row,
-	// this would be the 2nd overall row in the CSV. Otherwise, it is the first row.
-	var dataRow []string
-	if containsHeader {
-		dataRow, err = table.nextRow()
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		dataRow = firstRow
-	}
-
-	// We iterate over the data points and try to deduce their types.
-	for index, dataValue := range dataRow {
-		var columnName string
-		if containsHeader {
-			columnName = firstRow[index]
-		} else {
-			columnName = getColumnAlias(uint(index))
-		}
-
-		newColumn := Column{Name: columnName, Type: deduceTypeForColumn(dataValue)}
-		table.columns = append(table.columns, newColumn)
-	}
-
-	return &table, nil
-}
-
-func (ct CSVTable) Name() string {
-	return ct.name
-}
-
-func (ct CSVTable) Columns() []Column {
-	return ct.columns
-}
-
-func (ct CSVTable) LoadData() {
-	// TODO
-}
-
-func (ct CSVTable) RowCount() uint {
-	// FIXME: Get rid of placeholder
-	return 4
-}
-
-func (ct CSVTable) NextRow() ([]values.Value, error) {
-	stringRow, err := ct.nextRow()
-	if err != nil {
-		return nil, err
-	}
-
+func DeduceRowType(stringRow []string) ([]values.Value, error) {
 	row := make([]values.Value, len(stringRow))
 
 	for idx, val := range stringRow {
@@ -103,17 +36,98 @@ func (ct CSVTable) NextRow() ([]values.Value, error) {
 	return row, nil
 }
 
-func (ct CSVTable) nextRow() ([]string, error) {
-	row, err := ct.reader.Read()
+func NewCSVTable(file *os.File) (*CSVTable, error) {
+	reader := csv.NewReader(file)
+
+	nextRow := func() ([]string, error) {
+		row, err := reader.Read()
+		if err != nil {
+			return nil, err
+		}
+
+		for index := range row {
+			row[index] = strings.TrimSpace(row[index])
+		}
+
+		return row, nil
+	}
+
+	table := CSVTable{
+		name:    file.Name(),
+		columns: []ColumnInfo{},
+	}
+
+	// Scan the first row of the CSVs.
+	// It may or may not be the header row.
+	firstRow, err := nextRow()
 	if err != nil {
 		return nil, err
 	}
 
-	for index := range row {
-		row[index] = strings.TrimSpace(row[index])
+	// We run some simple heuristics to determine if the first row is a header.
+	// A header row is the one which contains the names of all columns.
+	containsHeader := isHeaderRow(firstRow)
+
+	// Now we need to determine the data type of each column.
+	// This is done based on the first row of data. If there's a header row,
+	// this would be the 2nd overall row in the CSV. Otherwise, it is the first row.
+	var dataRow []string
+	if containsHeader {
+		dataRow, err = nextRow()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		dataRow = firstRow
 	}
 
-	return row, nil
+	deducedRow, err := DeduceRowType(dataRow)
+	table.data = append(table.data, deducedRow)
+
+	// We iterate over the data points and try to deduce their types.
+	for index, dataValue := range dataRow {
+		var columnName string
+		if containsHeader {
+			columnName = firstRow[index]
+		} else {
+			columnName = getColumnAlias(uint(index))
+		}
+
+		newColumn := ColumnInfo{Name: columnName, Type: deduceTypeForColumn(dataValue)}
+		table.columns = append(table.columns, newColumn)
+	}
+
+	for {
+		stringRow, err := nextRow()
+		if err == io.EOF {
+			break
+		}
+
+		deducedRow, err = DeduceRowType(stringRow)
+		table.data = append(table.data, deducedRow)
+	}
+
+	return &table, nil
+}
+
+func (ct CSVTable) Name() string {
+	return ct.name
+}
+
+func (ct CSVTable) Columns() []ColumnInfo {
+	return ct.columns
+}
+
+func (ct CSVTable) RowCount() uint {
+	return uint(len(ct.data))
+}
+
+func (ct CSVTable) GetRow(rowIdx uint) ([]values.Value, error) {
+	if rowIdx >= uint(len(ct.data)) {
+		return nil, fmt.Errorf("row index out of range %d/%d", rowIdx, len(ct.data))
+	}
+
+	return ct.data[rowIdx], nil
 }
 
 func (ct CSVTable) IndexOfColumn(colName string) (uint, error) {

@@ -16,16 +16,15 @@ package table
 
 import "github.com/RohitAwate/commaql/vm/values"
 
-type Column struct {
+type ColumnInfo struct {
 	Name string
 	Type SQLTypeHint
 }
 
 type Table interface {
 	Name() string
-	Columns() []Column
+	Columns() []ColumnInfo
 	RowCount() uint
-	LoadData()
-	NextRow() ([]values.Value, error)
+	GetRow(rowIdx uint) ([]values.Value, error)
 	IndexOfColumn(colName string) (uint, error)
 }
