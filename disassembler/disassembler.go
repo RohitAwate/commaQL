@@ -62,7 +62,7 @@ func Disassemble(bc *vm.Bytecode) {
 			arg := bc.Blob[offset+argOffset]
 			bytecodeLine.WriteString(fmt.Sprintf(" %st:%d%s", ColorYellow, arg, ColorReset))
 
-			table := *bc.TableContext[arg]
+			table := bc.TableContext[arg]
 			tableRegisterArgsLine.WriteString(fmt.Sprintf("\t %s# t:%d: %s%s\n", ColorYellow, arg, table.Name(), ColorReset))
 		}
 

@@ -85,7 +85,7 @@ func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
 type Bytecode struct {
 	Blob          []OpCode
 	ConstantsPool []values.Value
-	TableContext  []*table.Table
+	TableContext  []table.Table
 }
 
 func NewBytecode() Bytecode {
@@ -100,7 +100,7 @@ func (b *Bytecode) AddConstant(v values.Value) uint {
 	return uint(len(b.ConstantsPool) - 1)
 }
 
-func (b *Bytecode) AddTableContext(t *table.Table) uint {
+func (b *Bytecode) AddTableContext(t table.Table) uint {
 	b.TableContext = append(b.TableContext, t)
 	return uint(len(b.TableContext) - 1)
 }

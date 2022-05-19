@@ -26,7 +26,7 @@ import (
 )
 
 type Compiler struct {
-	tableContext map[string]*table.Table
+	tableContext map[string]table.Table
 }
 
 func NewCompiler(filepath string) (*Compiler, error) {
@@ -42,8 +42,8 @@ func NewCompiler(filepath string) (*Compiler, error) {
 		return nil, fmt.Errorf("could not read from file: %s", filepath)
 	}
 
-	tableContext := map[string]*table.Table{
-		table.GetTableNameFromFile(filepath): &csvTable,
+	tableContext := map[string]table.Table{
+		table.GetTableNameFromFile(filepath): csvTable,
 	}
 	return &Compiler{tableContext: tableContext}, nil
 }

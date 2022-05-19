@@ -29,10 +29,10 @@ type CodeGenerator struct {
 	statements   []ast.Stmt
 	Code         vm.Bytecode
 	Errors       []common.Error
-	tableContext map[string]*table.Table
+	tableContext map[string]table.Table
 }
 
-func NewCodeGenerator(statements []ast.Stmt, tableContext map[string]*table.Table) (*CodeGenerator, error) {
+func NewCodeGenerator(statements []ast.Stmt, tableContext map[string]table.Table) (*CodeGenerator, error) {
 	if statements == nil {
 		return nil, fmt.Errorf("root of AST cannot be nil")
 	}

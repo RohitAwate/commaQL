@@ -19,14 +19,14 @@ import (
 )
 
 type stack struct {
-	meta []*values.Value
+	meta []values.Value
 }
 
-func (st *stack) push(v *values.Value) {
+func (st *stack) push(v values.Value) {
 	st.meta = append(st.meta, v)
 }
 
-func (st *stack) peek() *values.Value {
+func (st *stack) peek() values.Value {
 	if len(st.meta) > 0 {
 		return st.meta[len(st.meta)-1]
 	}
@@ -34,7 +34,7 @@ func (st *stack) peek() *values.Value {
 	return nil
 }
 
-func (st *stack) pop() *values.Value {
+func (st *stack) pop() values.Value {
 	if len(st.meta) > 0 {
 		topOfStack := st.meta[len(st.meta)-1]
 		st.meta = st.meta[:len(st.meta)-1]

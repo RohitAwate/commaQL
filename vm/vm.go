@@ -16,7 +16,6 @@ package vm
 
 import (
 	"fmt"
-	"github.com/RohitAwate/commaql/table"
 	"github.com/RohitAwate/commaql/vm/values"
 )
 
@@ -24,22 +23,23 @@ type VM struct {
 	// Table Context Registers
 	// 0: Main register (all queries are executed with this context)
 	// 1: Working register for joins, sub-queries, etc
-	tcr   [2]*table.Table
+	tcr [2]tableContext
+
 	stack stack
 	ip    uint
 }
 
 func NewVM() VM {
 	return VM{
-		tcr:   [2]*table.Table{},
-		stack: stack{meta: []*values.Value{}},
+		tcr:   [2]tableContext{},
+		stack: stack{meta: []values.Value{}},
 		ip:    0,
 	}
 }
 
-func binaryOp(left, right *values.Value, opCode OpCode) values.Value {
-	if leftNum, ok := (*left).(*values.Number); ok {
-		if rightNum, ok := (*right).(*values.Number); ok {
+func binaryOp(left, right values.Value, opCode OpCode) values.Value {
+	if leftNum, ok := left.(values.Number); ok {
+		if rightNum, ok := right.(values.Number); ok {
 			switch opCode {
 			case OpAdd:
 				return values.NewNumberFromValue(leftNum.Meta + rightNum.Meta)
@@ -67,8 +67,8 @@ func binaryOp(left, right *values.Value, opCode OpCode) values.Value {
 		}
 	}
 
-	if leftVal, ok := (*left).(*values.Boolean); ok {
-		if rightVal, ok := (*right).(*values.Boolean); ok {
+	if leftVal, ok := left.(values.Boolean); ok {
+		if rightVal, ok := right.(values.Boolean); ok {
 			switch opCode {
 			case OpAnd:
 				return values.NewBooleanFromValue(leftVal.Meta && rightVal.Meta)
@@ -132,6 +132,10 @@ func (vm *VM) Run(bc Bytecode) {
 
 	// TODO: Get rid of this
 	for _, val := range vm.stack.meta {
-		fmt.Println(*val)
+		fmt.Println(val)
+	}
+
+	for _, t := range vm.tcr {
+		fmt.Println(t)
 	}
 }
