@@ -83,7 +83,7 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	if ss.WhereClause != nil {
 		jumpOffset := cg.Code.Emit(vm.OpScan) + 1
 		cg.visitWhereClause(&ss.WhereClause)
-		cg.Code.EmitWithArgs(vm.OpJumpIfNotZero, jumpOffset)
+		cg.Code.EmitWithArgs(vm.OpJumpIfScan, jumpOffset)
 	}
 
 	// column resolution

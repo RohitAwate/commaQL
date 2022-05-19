@@ -25,6 +25,11 @@ type VM struct {
 	// 1: Working register for joins, sub-queries, etc
 	tcr [2]tableContext
 
+	// Limit and Iterator Registers
+	// Used for maintaining scan position within contexts.
+	lim uint
+	itr uint
+
 	stack stack
 	ip    uint
 }
@@ -136,12 +141,21 @@ func (vm *VM) Run(bc Bytecode) {
 			vm.tcr[readArg()].markColumnSelected(readArg())
 		case OpScan:
 			rows := vm.tcr[0].table.RowCount()
-			vm.stack.push(values.NewNumberFromValue(float64(rows)))
-			vm.stack.push(values.NewNumberFromValue(float64(0)))
+			vm.lim = rows
+			vm.itr = 0
 		case OpLoadVal:
 			tab := vm.tcr[0].table
 			row, _ := tab.NextRow()
 			vm.stack.push(row[readArg()])
+			vm.itr++
+		case OpJumpIfScan:
+			jumpOffset := uint(readArg())
+			if vm.itr < vm.lim {
+				vm.ip = jumpOffset
+			} else {
+				vm.itr = 0
+				vm.lim = 0
+			}
 		default:
 			panic("instruction not implemented: " + GetOpCodeInfo(opCode).PrintableName)
 		}

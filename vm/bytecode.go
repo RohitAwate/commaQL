@@ -42,7 +42,7 @@ const (
 	OpLoadTable
 	OpJoin
 
-	OpJumpIfNotZero
+	OpJumpIfScan
 
 	OpLoadConst
 	OpScan
@@ -82,7 +82,7 @@ var opCodeInfoMap = map[OpCode]OpCodeInfo{
 	OpSelectColumn:  {0, 0, 2, 0, "OpSelectColumn"},
 	OpLoadVal:       {0, 0, 1, 0, "OpLoadVal"},
 	OpScan:          {0, 0, 0, 0, "OpScan"},
-	OpJumpIfNotZero: {0, 0, 1, 0, "OpJumpIfNotZero"},
+	OpJumpIfScan:    {0, 0, 1, 0, "OpJumpIfScan"},
 }
 
 func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
