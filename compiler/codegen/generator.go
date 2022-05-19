@@ -81,7 +81,8 @@ func (cg *CodeGenerator) visitSelectStmt(ss *ast.SelectStmt) {
 	}
 
 	if ss.WhereClause != nil {
-		jumpOffset := cg.Code.Emit(vm.OpScan) + 1
+		jumpOffset := cg.Code.Emit(vm.OpScan)
+		cg.Code.EmitWithArgs(vm.OpLoadNextRow)
 		cg.visitWhereClause(&ss.WhereClause)
 		cg.Code.EmitWithArgs(vm.OpJumpIfScan, jumpOffset)
 	} // else use OpSelectRow until all

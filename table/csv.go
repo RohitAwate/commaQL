@@ -74,7 +74,7 @@ func (ct CSVTable) LoadData() {
 
 func (ct CSVTable) RowCount() uint {
 	// FIXME: Get rid of placeholder
-	return 3
+	return 4
 }
 
 func (ct CSVTable) NextRow() ([]values.Value, error) {

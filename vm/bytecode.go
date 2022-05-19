@@ -40,6 +40,7 @@ const (
 	OpNegate
 	OpNot
 	OpLoadTable
+	OpLoadNextRow
 	OpJoin
 
 	OpJumpIfScan
@@ -78,6 +79,7 @@ var opCodeInfoMap = map[OpCode]OpCodeInfo{
 	OpNegate:          {0, 0, 0, 1, "OpNegate"},
 	OpNot:             {0, 0, 0, 1, "OpNot"},
 	OpLoadTable:       {1, 0, 1, 0, "OpLoadTable"},
+	OpLoadNextRow:     {0, 0, 0, 0, "OpLoadNextRow"},
 	OpJoin:            {0, 0, 0, 0, "OpJoin"},
 	OpLoadConst:       {0, 1, 0, 0, "OpLoadConst"},
 	OpSelectColumn:    {0, 0, 2, 0, "OpSelectColumn"},

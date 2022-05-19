@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	query := `select name, age from people where graduated = true;`
+	query := `select name, age from people where age >= 23 and graduated = false;`
 
 	c, _ := compiler.NewCompiler("people.csv")
 	bytecode := c.Compile(query)

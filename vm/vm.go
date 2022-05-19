@@ -30,6 +30,9 @@ type VM struct {
 	lim uint
 	itr uint
 
+	// Row register
+	row []values.Value
+
 	stack stack
 	ip    uint
 }
@@ -143,13 +146,15 @@ func (vm *VM) Run(bc Bytecode) {
 			rows := vm.tcr[0].table.RowCount()
 			vm.lim = rows
 			vm.itr = 0
-		case OpLoadVal:
+		case OpLoadNextRow:
 			tab := vm.tcr[0].table
-			row, _ := tab.NextRow()
-			vm.stack.push(row[readArg()])
+			vm.row, _ = tab.NextRow()
 			vm.itr++
+		case OpLoadVal:
+			vm.stack.push(vm.row[readArg()])
 		case OpJumpIfScan:
-			jumpOffset := uint(readArg())
+			// -1 to offset for the loop counter increment before the next iteration
+			jumpOffset := uint(readArg()) - 1
 			if vm.itr < vm.lim {
 				vm.ip = jumpOffset
 			} else {
@@ -157,6 +162,7 @@ func (vm *VM) Run(bc Bytecode) {
 				vm.lim = 0
 			}
 		case OpSelectRowIfTrue:
+			fmt.Println(vm.stack.peek())
 			if vm.stack.pop().(values.Boolean).Meta {
 				vm.tcr[0].markRowSelected(vm.itr - 1)
 			}
