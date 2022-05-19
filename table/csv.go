@@ -78,8 +78,29 @@ func (ct CSVTable) RowCount() uint {
 }
 
 func (ct CSVTable) NextRow() ([]values.Value, error) {
-	// FIXME: WTF IS THIS PLACEHOLDER
-	return make([]values.Value, 10), nil
+	stringRow, err := ct.nextRow()
+	if err != nil {
+		return nil, err
+	}
+
+	row := make([]values.Value, len(stringRow))
+
+	for idx, val := range stringRow {
+		switch deduceTypeForColumn(val) {
+		case SqlInt:
+			fallthrough
+		case SqlFloat:
+			row[idx] = values.NewNumber(val)
+		case SqlString:
+			row[idx] = values.NewString(val)
+		case SqlBool:
+			row[idx] = values.NewBooleanFromString(val)
+		default:
+			panic("Type conversion not implemented!")
+		}
+	}
+
+	return row, nil
 }
 
 func (ct CSVTable) nextRow() ([]string, error) {

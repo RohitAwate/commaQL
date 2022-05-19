@@ -19,6 +19,7 @@ import (
 	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"strconv"
+	"strings"
 )
 
 type Value interface {
@@ -34,13 +35,13 @@ func (n Number) String() string {
 	return fmt.Sprintf("%.2f", n.Meta)
 }
 
-func NewNumber(lexeme string) *Number {
+func NewNumber(lexeme string) Number {
 	number, _ := strconv.ParseFloat(lexeme, 64)
-	return &Number{Meta: number}
+	return Number{Meta: number}
 }
 
-func NewNumberFromValue(val float64) *Number {
-	return &Number{Meta: val}
+func NewNumberFromValue(val float64) Number {
+	return Number{Meta: val}
 }
 
 type String struct {
@@ -52,8 +53,8 @@ func (s String) String() string {
 	return fmt.Sprintf("\"%s\"", s.Meta)
 }
 
-func NewString(lexeme string) *String {
-	return &String{Meta: lexeme}
+func NewString(lexeme string) String {
+	return String{Meta: lexeme}
 }
 
 type Boolean struct {
@@ -65,10 +66,18 @@ func (b Boolean) String() string {
 	return fmt.Sprintf("%t", b.Meta)
 }
 
-func NewBoolean(tokenType common.TokenType) *Boolean {
-	return &Boolean{Meta: tokenType == tokenizer.TRUE}
+func NewBoolean(tokenType common.TokenType) Boolean {
+	return Boolean{Meta: tokenType == tokenizer.TRUE}
 }
 
-func NewBooleanFromValue(val bool) *Boolean {
-	return &Boolean{Meta: val}
+func NewBooleanFromString(val string) Boolean {
+	// TODO: This is risky. This would say everything apart from "TRUE" is false.
+	// For example, "YOLO" != "TRUE" hence it would be false.
+	// Should probably raise some error.
+	val = strings.ToUpper(val)
+	return NewBooleanFromValue(val == "TRUE")
+}
+
+func NewBooleanFromValue(val bool) Boolean {
+	return Boolean{Meta: val}
 }
