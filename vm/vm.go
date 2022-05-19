@@ -84,13 +84,19 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 }
 
 func (vm *VM) Run(bc Bytecode) {
+	readArg := func() OpCode {
+		vm.ip++
+		return bc.Blob[vm.ip]
+	}
+
 	for vm.ip = 0; vm.ip < uint(len(bc.Blob)); vm.ip++ {
 		opCode := bc.Blob[vm.ip]
+
+		fmt.Printf("Executing: %s\n", GetOpCodeInfo(opCode).PrintableName)
+
 		switch opCode {
 		case OpLoadConst:
-			vm.ip++
-			constOffset := bc.Blob[vm.ip]
-			vm.stack.push(&bc.ConstantsPool[constOffset])
+			vm.stack.push(bc.ConstantsPool[readArg()])
 		case OpAdd:
 			fallthrough
 		case OpSubtract:
@@ -117,16 +123,23 @@ func (vm *VM) Run(bc Bytecode) {
 			leftOperand := vm.stack.pop()
 			rightOperand := vm.stack.pop()
 			res := binaryOp(leftOperand, rightOperand, opCode)
-			vm.stack.push(&res)
+			vm.stack.push(res)
 		case OpLoadTable:
 			// OpLoadTable table_ctx_idx table_ctx_register_idx
-			vm.ip++
-			tableCtx := bc.TableContext[bc.Blob[vm.ip]]
-
-			vm.ip++
-			vm.tcr[bc.Blob[vm.ip]] = tableCtx
+			tableCtx := bc.TableContext[readArg()]
+			vm.tcr[readArg()] = newTableContext(tableCtx)
+		case OpSelectColumn:
+			vm.tcr[readArg()].markColumnSelected(readArg())
+		case OpScan:
+			rows := vm.tcr[0].table.RowCount()
+			vm.stack.push(values.NewNumberFromValue(float64(rows)))
+			vm.stack.push(values.NewNumberFromValue(float64(0)))
+		case OpLoadVal:
+			tab := vm.tcr[0].table
+			row, _ := tab.NextRow()
+			vm.stack.push(row[readArg()])
 		default:
-			panic("Instruction not implemented: " + GetOpCodeInfo(opCode).PrintableName)
+			panic("instruction not implemented: " + GetOpCodeInfo(opCode).PrintableName)
 		}
 	}
 

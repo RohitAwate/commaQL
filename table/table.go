@@ -24,6 +24,7 @@ type Column struct {
 type Table interface {
 	Name() string
 	Columns() []Column
+	RowCount() uint
 	LoadData()
 	NextRow() ([]values.Value, error)
 	IndexOfColumn(colName string) (uint, error)

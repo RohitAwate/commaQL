@@ -20,18 +20,9 @@ import (
 )
 
 func main() {
-	query := `SELECT
-				name,
-				Gender,
-				Publisher,
-				Height,
-				Race
-			FROM
-				superhero
-			WHERE 100 - 2 = 98 AND 50-2*4 = 42
-			ORDER BY payment_date, amount;`
+	query := `select name, age from people where graduated = true;`
 
-	c, _ := compiler.NewCompiler("superhero.csv")
+	c, _ := compiler.NewCompiler("people.csv")
 	bytecode := c.Compile(query)
 
 	vm_ := vm.NewVM()

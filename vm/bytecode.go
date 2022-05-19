@@ -17,6 +17,7 @@ package vm
 import (
 	"github.com/RohitAwate/commaql/table"
 	"github.com/RohitAwate/commaql/vm/values"
+	"strconv"
 )
 
 type OpCode uint
@@ -40,9 +41,12 @@ const (
 	OpNot
 	OpLoadTable
 	OpJoin
-	OpLoadConst
 
+	OpJumpIfNotZero
+
+	OpLoadConst
 	OpScan
+	OpLoadVal
 
 	OpSelectColumn
 )
@@ -76,9 +80,16 @@ var opCodeInfoMap = map[OpCode]OpCodeInfo{
 	OpJoin:          {0, 0, 0, 0, "OpJoin"},
 	OpLoadConst:     {0, 1, 0, 0, "OpLoadConst"},
 	OpSelectColumn:  {0, 0, 2, 0, "OpSelectColumn"},
+	OpLoadVal:       {0, 0, 1, 0, "OpLoadVal"},
+	OpScan:          {0, 0, 0, 0, "OpScan"},
+	OpJumpIfNotZero: {0, 0, 1, 0, "OpJumpIfNotZero"},
 }
 
 func GetOpCodeInfo(opCode OpCode) OpCodeInfo {
+	if _, ok := opCodeInfoMap[opCode]; !ok {
+		panic("OpCode info not found: " + strconv.Itoa(int(opCode)))
+	}
+
 	return opCodeInfoMap[opCode]
 }
 
