@@ -68,8 +68,6 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 				return values.NewBooleanFromValue(leftNum.Meta <= rightNum.Meta)
 			case OpLessThan:
 				return values.NewBooleanFromValue(leftNum.Meta < rightNum.Meta)
-			default:
-				panic("UnsupportedOperation")
 			}
 		}
 	}
@@ -85,8 +83,6 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 				return values.NewBooleanFromValue(leftVal.Meta == rightVal.Meta)
 			case OpNotEquals:
 				return values.NewBooleanFromValue(leftVal.Meta != rightVal.Meta)
-			default:
-				panic("UnsupportedOperation")
 			}
 		}
 	}
@@ -100,8 +96,6 @@ func binaryOp(left, right values.Value, opCode OpCode) values.Value {
 				return values.NewBooleanFromValue(leftVal.Meta == rightVal.Meta)
 			case OpNotEquals:
 				return values.NewBooleanFromValue(leftVal.Meta != rightVal.Meta)
-			default:
-				panic("UnsupportedOperation")
 			}
 		}
 	}
