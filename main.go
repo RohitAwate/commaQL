@@ -18,23 +18,28 @@ import (
 	"fmt"
 	"github.com/RohitAwate/commaql/compiler"
 	"github.com/RohitAwate/commaql/vm"
+	"os"
 )
 
 func main() {
 	query := `
-		select name, age
+		SELECT pk, name, age
 		FROM people
-		where
-			age >= 23 and
-			graduated = true and
-			name = 'stutee'
+		WHERE age >= 23 and
 	`
 
 	c, _ := compiler.NewCompiler("people.csv")
-	bytecode := c.Compile(query)
+	bytecode, errors := c.Compile(query)
+	if len(errors) > 0 {
+		for _, err := range errors {
+			fmt.Println(err.Message)
+		}
+
+		os.Exit(1)
+	}
 
 	vm_ := vm.NewVM()
-	resultSet := vm_.Run(bytecode)
+	resultSet := vm_.Run(*bytecode)
 
 	for _, row := range resultSet.Meta {
 		fmt.Println(row)

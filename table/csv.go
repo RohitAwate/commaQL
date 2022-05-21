@@ -15,12 +15,13 @@ type CSVTable struct {
 	data    [][]values.Value
 }
 
-func DeduceRowType(stringRow []string) ([]values.Value, error) {
+func parseRowOfValues(stringRow []string) ([]values.Value, error) {
 	row := make([]values.Value, len(stringRow))
 
 	for idx, val := range stringRow {
 		switch deduceTypeForColumn(val) {
 		case SqlInt:
+			// TODO: Make a new values.Integer type
 			fallthrough
 		case SqlFloat:
 			row[idx] = values.NewNumber(val)
@@ -81,8 +82,8 @@ func NewCSVTable(file *os.File) (*CSVTable, error) {
 		dataRow = firstRow
 	}
 
-	deducedRow, err := DeduceRowType(dataRow)
-	table.data = append(table.data, deducedRow)
+	parsedRow, err := parseRowOfValues(dataRow)
+	table.data = append(table.data, parsedRow)
 
 	// We iterate over the data points and try to deduce their types.
 	for index, dataValue := range dataRow {
@@ -103,8 +104,8 @@ func NewCSVTable(file *os.File) (*CSVTable, error) {
 			break
 		}
 
-		deducedRow, err = DeduceRowType(stringRow)
-		table.data = append(table.data, deducedRow)
+		parsedRow, err = parseRowOfValues(stringRow)
+		table.data = append(table.data, parsedRow)
 	}
 
 	return &table, nil

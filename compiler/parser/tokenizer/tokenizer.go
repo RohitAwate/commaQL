@@ -102,6 +102,9 @@ func (t *Tokenizer) Run() ([]common.Token, []common.Error) {
 			tokens = append(tokens, t.emitSingleCharToken(GREATER_THAN))
 		case '^':
 			tokens = append(tokens, t.emitSingleCharToken(EXPONENT))
+		case 0:
+			// EOF
+			break
 		default:
 			t.emitError(fmt.Sprintf("Unexpected token: '%c'", t.peek()))
 		}

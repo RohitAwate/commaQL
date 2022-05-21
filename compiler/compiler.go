@@ -17,6 +17,7 @@ package compiler
 import (
 	"fmt"
 	"github.com/RohitAwate/commaql/compiler/codegen"
+	"github.com/RohitAwate/commaql/compiler/common"
 	"github.com/RohitAwate/commaql/compiler/parser"
 	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"github.com/RohitAwate/commaql/disassembler"
@@ -48,14 +49,18 @@ func NewCompiler(filepath string) (*Compiler, error) {
 	return &Compiler{tableContext: tableContext}, nil
 }
 
-func (c *Compiler) Compile(query string) vm.Bytecode {
-	// TODO: Maybe return cg.Code from here so that code can be fed into VM
-
+func (c *Compiler) Compile(query string) (*vm.Bytecode, []common.Error) {
 	t := tokenizer.Tokenizer{Query: query}
-	tokens, _ := t.Run()
+	tokens, err := t.Run()
+	if err != nil {
+		return nil, err
+	}
 
 	p := parser.Parser{Tokens: tokens}
-	statements, _ := p.Run()
+	statements, err := p.Run()
+	if err != nil {
+		return nil, err
+	}
 
 	cg, _ := codegen.NewCodeGenerator(statements, c.tableContext)
 	cg.Run()
@@ -68,5 +73,5 @@ func (c *Compiler) Compile(query string) vm.Bytecode {
 
 	disassembler.Disassemble(&cg.Code)
 
-	return cg.Code
+	return &cg.Code, nil
 }

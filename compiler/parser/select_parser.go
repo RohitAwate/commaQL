@@ -44,7 +44,7 @@ func (p *Parser) selectStatement() ast.Node {
 	if p.match(tokenizer.WHERE) {
 		whereClause := p.whereClause()
 		if whereClause == nil {
-			p.emitExpectedError("expression")
+			//p.emitExpectedError("expression")
 			return nil
 		}
 
