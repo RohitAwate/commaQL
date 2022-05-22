@@ -15,7 +15,7 @@
 package vm
 
 import (
-	"github.com/RohitAwate/commaql/vm/values"
+	"commaql/vm/values"
 )
 
 type stack struct {

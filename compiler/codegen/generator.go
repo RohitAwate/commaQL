@@ -17,12 +17,12 @@ package codegen
 import (
 	"fmt"
 
-	"github.com/RohitAwate/commaql/compiler/ast"
-	"github.com/RohitAwate/commaql/compiler/common"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
-	"github.com/RohitAwate/commaql/table"
-	"github.com/RohitAwate/commaql/vm"
-	"github.com/RohitAwate/commaql/vm/values"
+	"commaql/compiler/ast"
+	"commaql/compiler/common"
+	"commaql/compiler/parser/tokenizer"
+	"commaql/table"
+	"commaql/vm"
+	"commaql/vm/values"
 )
 
 type CodeGenerator struct {

@@ -15,11 +15,11 @@
 package parser
 
 import (
+	"commaql/compiler/common"
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler/common"
 
-	"github.com/RohitAwate/commaql/compiler/ast"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"commaql/compiler/ast"
+	"commaql/compiler/parser/tokenizer"
 )
 
 type Parser struct {

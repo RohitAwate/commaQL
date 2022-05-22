@@ -14,7 +14,7 @@
 
 package table
 
-import "github.com/RohitAwate/commaql/vm/values"
+import "commaql/vm/values"
 
 type ColumnInfo struct {
 	Name string

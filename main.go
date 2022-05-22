@@ -15,9 +15,9 @@
 package main
 
 import (
+	"commaql/compiler"
+	"commaql/vm"
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler"
-	"github.com/RohitAwate/commaql/vm"
 	"os"
 )
 
@@ -25,7 +25,7 @@ func main() {
 	query := `
 		SELECT pk, name, age
 		FROM people
-		WHERE age >= 23 and
+		WHERE age >= 23
 	`
 
 	c, _ := compiler.NewCompiler("people.csv")

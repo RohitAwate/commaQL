@@ -15,8 +15,8 @@
 package vm
 
 import (
-	"github.com/RohitAwate/commaql/table"
-	"github.com/RohitAwate/commaql/vm/values"
+	"commaql/table"
+	"commaql/vm/values"
 )
 
 type tableContext struct {

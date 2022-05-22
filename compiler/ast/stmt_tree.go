@@ -15,7 +15,7 @@
 package ast
 
 import (
-	"github.com/RohitAwate/commaql/compiler/common"
+	"commaql/compiler/common"
 )
 
 type SelectStmt struct {

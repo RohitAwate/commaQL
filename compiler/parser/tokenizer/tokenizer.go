@@ -15,8 +15,8 @@
 package tokenizer
 
 import (
+	"commaql/compiler/common"
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler/common"
 	"strings"
 )
 

@@ -15,14 +15,14 @@
 package compiler
 
 import (
+	"commaql/compiler/codegen"
+	"commaql/compiler/common"
+	"commaql/compiler/parser"
+	"commaql/compiler/parser/tokenizer"
+	"commaql/disassembler"
+	"commaql/table"
+	"commaql/vm"
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler/codegen"
-	"github.com/RohitAwate/commaql/compiler/common"
-	"github.com/RohitAwate/commaql/compiler/parser"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
-	"github.com/RohitAwate/commaql/disassembler"
-	"github.com/RohitAwate/commaql/table"
-	"github.com/RohitAwate/commaql/vm"
 	"os"
 )
 

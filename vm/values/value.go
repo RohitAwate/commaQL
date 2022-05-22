@@ -15,9 +15,9 @@
 package values
 
 import (
+	"commaql/compiler/common"
+	"commaql/compiler/parser/tokenizer"
 	"fmt"
-	"github.com/RohitAwate/commaql/compiler/common"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
 	"strconv"
 	"strings"
 )

@@ -1,3 +1,3 @@
-module github.com/RohitAwate/commaql
+module commaql
 
 go 1.18

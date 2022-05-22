@@ -1,9 +1,9 @@
 package table
 
 import (
+	"commaql/vm/values"
 	"encoding/csv"
 	"fmt"
-	"github.com/RohitAwate/commaql/vm/values"
 	"io"
 	"os"
 	"strings"

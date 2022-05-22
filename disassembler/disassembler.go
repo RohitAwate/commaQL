@@ -15,8 +15,8 @@
 package disassembler
 
 import (
+	"commaql/vm"
 	"fmt"
-	"github.com/RohitAwate/commaql/vm"
 	"strings"
 )
 

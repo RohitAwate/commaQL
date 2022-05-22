@@ -15,8 +15,8 @@
 package parser
 
 import (
-	"github.com/RohitAwate/commaql/compiler/ast"
-	"github.com/RohitAwate/commaql/compiler/parser/tokenizer"
+	"commaql/compiler/ast"
+	"commaql/compiler/parser/tokenizer"
 )
 
 func (p *Parser) selectStatement() ast.Node {
